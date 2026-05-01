@@ -350,13 +350,14 @@
       }
     }
 
-    const TIME_PER_NUMBER = 30;
+    const TIME_PER_QUESTION = 3;
     const selectedNumbers = new Set();
     let filterState = null;
     let answered = 0;
     let correct = 0;
     let timeLeft = 0;
     let timerInterval = null;
+    let examActive = false;
     let locked = false;
     let questionPool = [];
     let sessionFacts = [];
@@ -464,6 +465,8 @@
     }
 
     function nextQuestion() {
+      if (!examActive) return;
+
       if (questionPool.length === 0) {
         endGame(true);
         return;
@@ -582,7 +585,7 @@
     }
 
     function handleChoice(btn, value) {
-      if (locked) return;
+      if (!examActive || locked) return;
       locked = true;
       answered++;
 
@@ -599,9 +602,7 @@
       if (_correct) {
         correct++;
         sessionCorrectKeys.add(stateKey(currentQuestion.factorA, currentQuestion.factorB));
-        if (_next === "dg") {
-          questionPool = questionPool.filter(q => q !== currentQuestion);
-        }
+        questionPool = questionPool.filter(q => q !== currentQuestion);
         playFeedback(true);
         btn.classList.add("correct");
         feedback.textContent = "Doğru!";
@@ -619,25 +620,29 @@
       answeredPill.textContent = `Cevaplanan: ${answered}`;
       updateScorePill();
 
-      setTimeout(nextQuestion, 900);
+      if (_correct && questionPool.length === 0) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        setTimeout(() => endGame(true), 900);
+      } else {
+        setTimeout(nextQuestion, 900);
+      }
     }
 
     // ── timer ────────────────────────────────────────────────────────────────
 
     function startTimer() {
-      timeLeft = filterState !== null
-        ? Math.max(1, Math.ceil(questionPool.length / 10)) * TIME_PER_NUMBER
-        : selectedNumbers.size * TIME_PER_NUMBER;
       updateTimerDisplay();
+      clearInterval(timerInterval);
       timerInterval = setInterval(() => {
         timeLeft--;
         updateTimerDisplay();
-        if (timeLeft <= 0) endGame();
+        if (timeLeft <= 0) endGame(false);
       }, 1000);
     }
 
     function updateTimerDisplay() {
-      timerPill.textContent = `⏱ ${timeLeft}s`;
+      timerPill.textContent = `⏱ ${Math.max(0, timeLeft)}s`;
       timerPill.classList.toggle("timer-urgent", timeLeft <= 10);
     }
 
@@ -646,10 +651,12 @@
     function startGame() {
       answered = 0;
       correct = 0;
+      examActive = true;
       locked = false;
       questionPool = buildPool();
       sessionFacts = [...questionPool];
       sessionCorrectKeys = new Set();
+      timeLeft = sessionFacts.length * TIME_PER_QUESTION;
 
       setupPanel.classList.add("hidden");
       summaryPanel.classList.add("hidden");
@@ -658,11 +665,13 @@
       updateScorePill();
       answeredPill.textContent = "Cevaplanan: 0";
 
-      nextQuestion();
       startTimer();
+      nextQuestion();
     }
 
     function endGame(cleared = false) {
+      if (!examActive && !cleared) return;
+      examActive = false;
       clearInterval(timerInterval);
       timerInterval = null;
       locked = true;
