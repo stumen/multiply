@@ -261,24 +261,6 @@
     .summary strong { font-size: 1.25rem; }
     .summary p { margin: 8px 0; }
 
-    /* ── legend ── */
-    .legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 14px;
-      font-size: 0.82rem;
-      font-weight: 700;
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .legend-dot {
-      width: 12px; height: 12px;
-      border-radius: 3px;
-    }
 
     .hidden { display: none; }
 
@@ -315,14 +297,6 @@
       <!-- table preview in setup -->
       <div class="mult-table hidden" id="setup-table"></div>
 
-      <!-- legend -->
-      <div class="legend">
-        <div class="legend-item"><div class="legend-dot" style="background:var(--c-neutral-bar)"></div> Hiç cevaplanmadı</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--c-lg-bar)"></div> 1. doğru</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--c-dg-bar)"></div> Ustalaşıldı</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--c-or-bar)"></div> 1. yanlış</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--c-rd-bar)"></div> 2. yanlış</div>
-      </div>
 
       <div class="answer-row">
         <button class="primary-btn" id="start-btn" type="button" disabled>Başlat</button>
