@@ -359,6 +359,8 @@
     let timerInterval = null;
     let locked = false;
     let questionPool = [];
+    let sessionFacts = [];
+    let sessionCorrectKeys = new Set();
     let currentQuestion = null;
 
     function masteredCount() {
@@ -368,6 +370,10 @@
         for (let m = 1; m <= 10; m++)
           if (getState(d, n, m) === "dg") c++;
       return c;
+    }
+
+    function updateScorePill() {
+      scorePill.textContent = `⭐ ${sessionCorrectKeys.size} / ${sessionFacts.length}`;
     }
 
     // ── setup buttons ────────────────────────────────────────────────────────
@@ -592,6 +598,7 @@
 
       if (_correct) {
         correct++;
+        sessionCorrectKeys.add(stateKey(currentQuestion.factorA, currentQuestion.factorB));
         if (_next === "dg") {
           questionPool = questionPool.filter(q => q !== currentQuestion);
         }
@@ -610,7 +617,7 @@
       }
 
       answeredPill.textContent = `Cevaplanan: ${answered}`;
-      scorePill.textContent = `⭐ ${masteredCount()} / 90`;
+      updateScorePill();
 
       setTimeout(nextQuestion, 900);
     }
@@ -641,12 +648,14 @@
       correct = 0;
       locked = false;
       questionPool = buildPool();
+      sessionFacts = [...questionPool];
+      sessionCorrectKeys = new Set();
 
       setupPanel.classList.add("hidden");
       summaryPanel.classList.add("hidden");
       quizPanel.classList.remove("hidden");
 
-      scorePill.textContent = `⭐ ${masteredCount()} / 90`;
+      updateScorePill();
       answeredPill.textContent = "Cevaplanan: 0";
 
       nextQuestion();
@@ -661,11 +670,12 @@
       quizPanel.classList.add("hidden");
       summaryPanel.classList.remove("hidden");
 
-      const mastered = masteredCount();
+      const sessionScore = sessionCorrectKeys.size;
+      const total = sessionFacts.length;
       const wrong = answered - correct;
       summaryText.textContent = cleared
-        ? `Tebrikler! ⭐ ${mastered} / 90 ustalaştın!`
-        : `Süre doldu! ⭐ ${mastered} / 90 ustalaştın.`;
+        ? `Tebrikler! ⭐ ${sessionScore} / ${total} doğru yaptın!`
+        : `Süre doldu! ⭐ ${sessionScore} / ${total} doğru yaptın.`;
       summaryDetail.textContent =
         `${answered} soruyu cevapladın: ` +
         `${correct} doğru, ${wrong} yanlış.`;

@@ -377,7 +377,7 @@
       <div class="quiz-top">
         <div class="pill" id="remaining-pill">Kaldı: 0</div>
         <div class="pill" id="attempts-pill">Deneme: 0</div>
-        <div class="pill" id="mastered-pill">⭐ 0 / 90</div>
+        <div class="pill" id="mastered-pill">⭐ 0 / 0</div>
       </div>
 
       <div class="mult-table" id="quiz-table"></div>
@@ -428,6 +428,8 @@
   let selectedNumbers = new Set();
   let filterState = null;
   let questionQueue   = [];
+  let sessionFacts    = [];
+  let sessionCorrectKeys = new Set();
   let currentQuestion = null;
   let locked          = false;
   let sessionAttempts = 0;
@@ -594,7 +596,7 @@
   function updatePills() {
     remainingPill.textContent = `Kaldı: ${questionQueue.length}`;
     attemptsPill.textContent  = `Deneme: ${sessionAttempts}`;
-    masteredPill.textContent  = `⭐ ${masteredCount()} / 90`;
+    masteredPill.textContent  = `⭐ ${sessionCorrectKeys.size} / ${sessionFacts.length}`;
   }
 
   // ── quiz ──────────────────────────────────────────────────────────────────
@@ -756,6 +758,7 @@
     updateTableRow(m);
 
     if (correct) {
+      sessionCorrectKeys.add(stateKey(n, m));
       playFeedback(true);
       btn.classList.add("correct");
       questionQueue.shift();
@@ -782,6 +785,8 @@
   // ── game flow ─────────────────────────────────────────────────────────────
   function startGame() {
     questionQueue   = buildQueue(selectedNumbers);
+    sessionFacts    = [...questionQueue];
+    sessionCorrectKeys = new Set();
     sessionAttempts = 0;
     locked          = false;
 
