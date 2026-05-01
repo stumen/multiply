@@ -329,7 +329,7 @@
     const summaryText    = document.getElementById("summary-text");
     const summaryDetail  = document.getElementById("summary-detail");
 
-    const STORAGE_KEY = "multiply_states_v2";
+    const STORAGE_KEY = "multiply_states";
     const STATE_EMOJI  = { n: "❔", lg: "🙂", dg: "⭐", or: "😕", rd: "😰" };
     const STATE_LABEL  = { n: "Denenmedi", lg: "Az bildim", dg: "Ustalaştım!", or: "Zorlandım", rd: "Unutuyorum" };
     function loadData() {
@@ -353,19 +353,21 @@
     const TIME_PER_NUMBER = 30;
     const selectedNumbers = new Set();
     let filterState = null;
-    let score = 0;
     let answered = 0;
     let correct = 0;
     let timeLeft = 0;
     let timerInterval = null;
     let locked = false;
-    let questionPool = [];   // questions not yet answered correctly
+    let questionPool = [];
     let currentQuestion = null;
-    let initialPoolSize = 0;
 
-    function normalizedScore() {
-      if (initialPoolSize === 0) return 0;
-      return Math.round(Math.max(0, Math.min(100, (score / initialPoolSize) * 100)));
+    function masteredCount() {
+      const d = loadData();
+      let c = 0;
+      for (let n = 2; n <= 10; n++)
+        for (let m = 1; m <= 10; m++)
+          if (getState(d, n, m) === "dg") c++;
+      return c;
     }
 
     // ── setup buttons ────────────────────────────────────────────────────────
@@ -581,34 +583,34 @@
       const allBtns = mcGrid.querySelectorAll(".choice-btn");
       allBtns.forEach(b => b.disabled = true);
 
-      const _d = loadData();
-      const _prev = getState(_d, currentQuestion.factorA, currentQuestion.factorB);
-      _d[stateKey(currentQuestion.factorA, currentQuestion.factorB)] = nextState(_prev, value === currentQuestion.answer);
+      const _d       = loadData();
+      const _prev    = getState(_d, currentQuestion.factorA, currentQuestion.factorB);
+      const _correct = value === currentQuestion.answer;
+      const _next    = nextState(_prev, _correct);
+      _d[stateKey(currentQuestion.factorA, currentQuestion.factorB)] = _next;
       saveData(_d);
 
-      if (value === currentQuestion.answer) {
-        score++;
+      if (_correct) {
         correct++;
-        // remove from pool — answered correctly, won't appear again
-        questionPool = questionPool.filter(q => q !== currentQuestion);
+        if (_next === "dg") {
+          questionPool = questionPool.filter(q => q !== currentQuestion);
+        }
         playFeedback(true);
         btn.classList.add("correct");
         feedback.textContent = "Doğru!";
         feedback.className = "feedback success";
       } else {
-        score--;
         playFeedback(false);
         btn.classList.add("wrong");
-        // keep in pool — will be asked again
         allBtns.forEach(b => {
           if (Number(b.textContent) === currentQuestion.answer) b.classList.add("reveal");
         });
-        feedback.textContent = `Yanlış! Doğru cevap: ${currentQuestion.answer}. −1`;
+        feedback.textContent = `Yanlış! Doğru cevap: ${currentQuestion.answer}.`;
         feedback.className = "feedback error";
       }
 
       answeredPill.textContent = `Cevaplanan: ${answered}`;
-      scorePill.textContent = `Puan: ${normalizedScore()}`;
+      scorePill.textContent = `⭐ ${masteredCount()} / 90`;
 
       setTimeout(nextQuestion, 900);
     }
@@ -635,18 +637,16 @@
     // ── game flow ────────────────────────────────────────────────────────────
 
     function startGame() {
-      score = 0;
       answered = 0;
       correct = 0;
       locked = false;
       questionPool = buildPool();
-      initialPoolSize = questionPool.length;
 
       setupPanel.classList.add("hidden");
       summaryPanel.classList.add("hidden");
       quizPanel.classList.remove("hidden");
 
-      scorePill.textContent = "Puan: 0";
+      scorePill.textContent = `⭐ ${masteredCount()} / 90`;
       answeredPill.textContent = "Cevaplanan: 0";
 
       nextQuestion();
@@ -661,16 +661,16 @@
       quizPanel.classList.add("hidden");
       summaryPanel.classList.remove("hidden");
 
-      const ns    = normalizedScore();
+      const mastered = masteredCount();
       const wrong = answered - correct;
       summaryText.textContent = cleared
-        ? `Tebrikler! Toplam puan: ${ns} / 100`
-        : `Süre doldu! Toplam puan: ${ns} / 100`;
+        ? `Tebrikler! ⭐ ${mastered} / 90 ustalaştın!`
+        : `Süre doldu! ⭐ ${mastered} / 90 ustalaştın.`;
       summaryDetail.textContent =
         `${answered} soruyu cevapladın: ` +
         `${correct} doğru, ${wrong} yanlış.`;
 
-      if (ns === 100) {
+      if (cleared) {
         playVictory();
         launchConfetti();
       }

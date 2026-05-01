@@ -377,6 +377,7 @@
       <div class="quiz-top">
         <div class="pill" id="remaining-pill">Kaldı: 0</div>
         <div class="pill" id="attempts-pill">Deneme: 0</div>
+        <div class="pill" id="mastered-pill">⭐ 0 / 90</div>
       </div>
 
       <div class="mult-table" id="quiz-table"></div>
@@ -409,6 +410,7 @@
   const quizTable     = document.getElementById("quiz-table");
   const remainingPill = document.getElementById("remaining-pill");
   const attemptsPill  = document.getElementById("attempts-pill");
+  const masteredPill  = document.getElementById("mastered-pill");
   const questionText  = document.getElementById("question-text");
   const mcGrid        = document.getElementById("mc-grid");
   const feedback      = document.getElementById("feedback");
@@ -416,7 +418,7 @@
   const summaryDetail = document.getElementById("summary-detail");
 
   // ── constants ─────────────────────────────────────────────────────────────
-  const STORAGE_KEY = "multiply_states_v2";
+  const STORAGE_KEY = "multiply_states";
 
   // state codes: n=neutral, lg=light-green, dg=dark-green, or=orange, rd=red
   const STATE_EMOJI  = { n: "❔", lg: "🙂", dg: "⭐", or: "😕", rd: "😰" };
@@ -448,6 +450,15 @@
       if (current === "or" || current === "rd") return "rd";
       return "or";   // n, lg → or
     }
+  }
+
+  function masteredCount() {
+    const d = loadData();
+    let c = 0;
+    for (let n = 2; n <= 10; n++)
+      for (let m = 1; m <= 10; m++)
+        if (getState(d, n, m) === "dg") c++;
+    return c;
   }
 
   // ── helpers ───────────────────────────────────────────────────────────────
@@ -583,6 +594,7 @@
   function updatePills() {
     remainingPill.textContent = `Kaldı: ${questionQueue.length}`;
     attemptsPill.textContent  = `Deneme: ${sessionAttempts}`;
+    masteredPill.textContent  = `⭐ ${masteredCount()} / 90`;
   }
 
   // ── quiz ──────────────────────────────────────────────────────────────────
