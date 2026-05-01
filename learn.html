@@ -321,18 +321,8 @@
       <h2 style="margin:0 0 4px;">Hangi sayıyı çalışmak istiyorsun?</h2>
       <div class="number-grid" id="number-grid"></div>
 
-      <div class="progress-wrap hidden" id="progress-wrap">
-        <div class="progress-label" id="progress-label"></div>
-        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
-      </div>
-
-      <!-- table preview in setup -->
-      <div class="mult-table hidden" id="setup-table"></div>
-
-
       <div class="answer-row">
         <button class="primary-btn" id="start-btn" type="button" disabled>Başlat</button>
-        <button class="ghost-btn"   id="reset-btn" type="button">İlerlemeyi Sıfırla</button>
       </div>
     </section>
 
@@ -340,7 +330,7 @@
     <section class="panel hidden" id="quiz-panel">
       <div class="quiz-top">
         <div class="pill" id="remaining-pill">Kaldı: 0</div>
-        <div class="pill" id="mastered-pill">Ustalaşılan: 0 / 10</div>
+        <div class="pill" id="attempts-pill">Deneme: 0</div>
       </div>
 
       <div class="mult-table" id="quiz-table"></div>
@@ -354,7 +344,6 @@
     <section class="panel summary hidden" id="summary-panel">
       <p><strong id="summary-text"></strong></p>
       <p id="summary-detail"></p>
-      <p id="summary-total"></p>
       <div class="answer-row">
         <button class="primary-btn" id="play-again-btn" type="button">Tekrar Çalış</button>
       </div>
@@ -367,24 +356,18 @@
   // ── DOM refs ─────────────────────────────────────────────────────────────
   const numberGrid    = document.getElementById("number-grid");
   const startBtn      = document.getElementById("start-btn");
-  const resetBtn      = document.getElementById("reset-btn");
   const playAgainBtn  = document.getElementById("play-again-btn");
   const setupPanel    = document.getElementById("setup-panel");
   const quizPanel     = document.getElementById("quiz-panel");
   const summaryPanel  = document.getElementById("summary-panel");
+  const quizTable     = document.getElementById("quiz-table");
   const remainingPill = document.getElementById("remaining-pill");
-  const masteredPill  = document.getElementById("mastered-pill");
+  const attemptsPill  = document.getElementById("attempts-pill");
   const questionText  = document.getElementById("question-text");
   const mcGrid        = document.getElementById("mc-grid");
   const feedback      = document.getElementById("feedback");
   const summaryText   = document.getElementById("summary-text");
   const summaryDetail = document.getElementById("summary-detail");
-  const summaryTotal  = document.getElementById("summary-total");
-  const setupTable    = document.getElementById("setup-table");
-  const quizTable     = document.getElementById("quiz-table");
-  const progressWrap  = document.getElementById("progress-wrap");
-  const progressLabel = document.getElementById("progress-label");
-  const progressFill  = document.getElementById("progress-fill");
 
   // ── constants ─────────────────────────────────────────────────────────────
   const STORAGE_KEY = "multiply_states_v2";
@@ -397,7 +380,6 @@
   let questionQueue   = [];
   let currentQuestion = null;
   let locked          = false;
-  let sessionMastered = 0;
   let sessionAttempts = 0;
 
   // ── persistence ───────────────────────────────────────────────────────────
@@ -444,28 +426,24 @@
   }
 
   // ── multiplication table rendering ────────────────────────────────────────
-  function renderTable(container, n, currentQ) {
+  function renderTable(n, currentQ) {
     const d = loadData();
-    container.innerHTML = "";
+    quizTable.innerHTML = "";
     for (let m = 1; m <= 10; m++) {
-      const st  = getState(d, n, m);
       const row = document.createElement("div");
       row.className = "trow";
       row.dataset.m = m;
       if (currentQ && currentQ.factorB === m) row.classList.add("current");
-      row.innerHTML = `<span>${m}</span><span class="trow-emoji">${STATE_EMOJI[st]}</span>`;
-      container.appendChild(row);
+      row.innerHTML = `<span>${m}</span><span class="trow-emoji">${STATE_EMOJI[getState(d, n, m)]}</span>`;
+      quizTable.appendChild(row);
     }
   }
 
   function updateTableRow(m) {
     const d   = loadData();
-    const st  = getState(d, selectedNumber, m);
     const row = quizTable.querySelector(`[data-m="${m}"]`);
     if (!row) return;
-    row.className = "trow";
-    if (currentQuestion && currentQuestion.factorB === m) row.classList.add("current");
-    row.querySelector(".trow-emoji").textContent = STATE_EMOJI[st];
+    row.querySelector(".trow-emoji").textContent = STATE_EMOJI[getState(d, selectedNumber, m)];
   }
 
   function highlightCurrentRow() {
@@ -474,32 +452,6 @@
       const row = quizTable.querySelector(`[data-m="${currentQuestion.factorB}"]`);
       if (row) row.classList.add("current");
     }
-  }
-
-  // ── number button badges ──────────────────────────────────────────────────
-  function refreshBadges() {
-    const d = loadData();
-    numberGrid.querySelectorAll(".number-btn").forEach(btn => {
-      const n = Number(btn.dataset.n);
-      const mastered = [...Array(10)].filter((_,i) => getState(d, n, i+1) === "dg").length;
-      const old = btn.querySelector(".mbadge");
-      if (old) old.remove();
-      if (mastered > 0) {
-        const b = document.createElement("span");
-        b.className = "mbadge";
-        b.textContent = `${mastered}/10`;
-        btn.appendChild(b);
-      }
-    });
-  }
-
-  function updateSetupProgress(n) {
-    const d       = loadData();
-    const mastered = [...Array(10)].filter((_,i) => getState(d, n, i+1) === "dg").length;
-    const pct     = Math.round(mastered / 10 * 100);
-    progressWrap.classList.remove("hidden");
-    progressLabel.textContent = `${mastered} / 10 soruda ustalaştın (%${pct})`;
-    progressFill.style.width  = `${pct}%`;
   }
 
   // ── setup buttons ─────────────────────────────────────────────────────────
@@ -513,7 +465,6 @@
       btn.addEventListener("click", () => selectNumber(n));
       numberGrid.appendChild(btn);
     }
-    refreshBadges();
   }
 
   function selectNumber(n) {
@@ -522,9 +473,6 @@
       b.classList.toggle("active", Number(b.dataset.n) === n);
     });
     startBtn.disabled = false;
-    updateSetupProgress(n);
-    setupTable.classList.remove("hidden");
-    renderTable(setupTable, n, null);
   }
 
   // ── queue building ────────────────────────────────────────────────────────
@@ -546,11 +494,8 @@
 
   // ── pills ─────────────────────────────────────────────────────────────────
   function updatePills() {
-    const d       = loadData();
-    const mastered = [...Array(10)].filter((_,i) =>
-      getState(d, selectedNumber, i+1) === "dg").length;
     remainingPill.textContent = `Kaldı: ${questionQueue.length}`;
-    masteredPill.textContent  = `Ustalaşılan: ${mastered} / 10`;
+    attemptsPill.textContent  = `Deneme: ${sessionAttempts}`;
   }
 
   // ── quiz ──────────────────────────────────────────────────────────────────
@@ -715,16 +660,9 @@
       playFeedback(true);
       btn.classList.add("correct");
       questionQueue.shift();
-
-      if (next === "dg") {
-        sessionMastered++;
-        feedback.textContent = "Ustalaştın!";
-        feedback.className = "feedback ok";
-      } else {
-        questionQueue.push(currentQuestion);
-        feedback.textContent = "Doğru! Bir kez daha bil.";
-        feedback.className = "feedback ok";
-      }
+      if (next !== "dg") questionQueue.push(currentQuestion);
+      feedback.textContent = "Doğru!";
+      feedback.className = "feedback ok";
     } else {
       playFeedback(false);
       btn.classList.add("wrong");
@@ -745,7 +683,6 @@
   // ── game flow ─────────────────────────────────────────────────────────────
   function startGame() {
     questionQueue   = buildQueue(selectedNumber);
-    sessionMastered = 0;
     sessionAttempts = 0;
     locked          = false;
 
@@ -753,7 +690,7 @@
     summaryPanel.classList.add("hidden");
     quizPanel.classList.remove("hidden");
 
-    renderTable(quizTable, selectedNumber, null);
+    renderTable(selectedNumber, null);
     updatePills();
     nextQuestion();
   }
@@ -762,44 +699,26 @@
     quizPanel.classList.add("hidden");
     summaryPanel.classList.remove("hidden");
 
-    const d       = loadData();
+    const d        = loadData();
     const mastered = [...Array(10)].filter((_,i) =>
       getState(d, selectedNumber, i+1) === "dg").length;
 
     if (mastered === 10) {
-      summaryText.textContent = `${selectedNumber} çarpım tablosunda tam ustasın!`;
+      summaryText.textContent = `Tebrikler! ${selectedNumber} tablosunu bitirdin!`;
       playVictory();
       launchConfetti();
     } else {
-      summaryText.textContent = `Bu turda ${sessionMastered} yeni soruda ustalaştın!`;
+      summaryText.textContent = `Bu turu tamamladın!`;
     }
-    summaryDetail.textContent = `${sessionAttempts} denemede ${sessionMastered} soruyu tamamladın.`;
-    summaryTotal.textContent  = `Toplam: ${mastered} / 10 soruda ustasın.`;
-
-    refreshBadges();
+    summaryDetail.textContent = `${sessionAttempts} denemede ${selectedNumber} çarpım tablosunu çalıştın.`;
   }
 
   // ── wiring ────────────────────────────────────────────────────────────────
   startBtn.addEventListener("click", startGame);
 
-  resetBtn.addEventListener("click", () => {
-    if (!confirm("Tüm ilerleme silinecek. Emin misin?")) return;
-    localStorage.removeItem(STORAGE_KEY);
-    refreshBadges();
-    if (selectedNumber) {
-      updateSetupProgress(selectedNumber);
-      renderTable(setupTable, selectedNumber, null);
-    }
-  });
-
   playAgainBtn.addEventListener("click", () => {
     summaryPanel.classList.add("hidden");
     setupPanel.classList.remove("hidden");
-    refreshBadges();
-    if (selectedNumber) {
-      updateSetupProgress(selectedNumber);
-      renderTable(setupTable, selectedNumber, null);
-    }
   });
 
   buildNumberButtons();

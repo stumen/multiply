@@ -283,6 +283,25 @@
     const summaryText    = document.getElementById("summary-text");
     const summaryDetail  = document.getElementById("summary-detail");
 
+    const STORAGE_KEY = "multiply_states_v2";
+    function loadData() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+      catch { return {}; }
+    }
+    function saveData(d) { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+    function stateKey(n, m) { return `${n}_${m}`; }
+    function getState(d, n, m) { return d[stateKey(n, m)] || "n"; }
+    function nextState(current, isCorrect) {
+      if (isCorrect) {
+        if (current === "dg") return "dg";
+        if (current === "lg") return "dg";
+        return "lg";
+      } else {
+        if (current === "or" || current === "rd") return "rd";
+        return "or";
+      }
+    }
+
     const TIME_PER_NUMBER = 30;
     const selectedNumbers = new Set();
     let score = 0;
@@ -478,6 +497,11 @@
 
       const allBtns = mcGrid.querySelectorAll(".choice-btn");
       allBtns.forEach(b => b.disabled = true);
+
+      const _d = loadData();
+      const _prev = getState(_d, currentQuestion.factorA, currentQuestion.factorB);
+      _d[stateKey(currentQuestion.factorA, currentQuestion.factorB)] = nextState(_prev, value === currentQuestion.answer);
+      saveData(_d);
 
       if (value === currentQuestion.answer) {
         score++;
