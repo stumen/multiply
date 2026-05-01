@@ -546,6 +546,35 @@
     });
   }
 
+  function playFeedback(correct) {
+    const ctx  = new (window.AudioContext || window.webkitAudioContext)();
+    const gain = ctx.createGain();
+    gain.connect(ctx.destination);
+
+    if (correct) {
+      [523, 784].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        osc.type = "sine";
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.gain.setValueAtTime(0.25, ctx.currentTime + i * 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.22);
+        osc.start(ctx.currentTime + i * 0.12);
+        osc.stop(ctx.currentTime + i * 0.12 + 0.22);
+      });
+    } else {
+      const osc = ctx.createOscillator();
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(280, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.35);
+      osc.connect(gain);
+      gain.gain.setValueAtTime(0.18, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.35);
+    }
+  }
+
   function handleChoice(btn, value) {
     if (locked) return;
     locked = true;
@@ -565,6 +594,7 @@
     updateTableRow(m);
 
     if (correct) {
+      playFeedback(true);
       btn.classList.add("correct");
       questionQueue.shift();
 
@@ -573,12 +603,12 @@
         feedback.textContent = "Ustalaştın!";
         feedback.className = "feedback ok";
       } else {
-        // lg — needs one more correct; move to end
         questionQueue.push(currentQuestion);
         feedback.textContent = "Doğru! Bir kez daha bil.";
         feedback.className = "feedback ok";
       }
     } else {
+      playFeedback(false);
       btn.classList.add("wrong");
       mcGrid.querySelectorAll(".choice-btn").forEach(b => {
         if (Number(b.textContent) === currentQuestion.answer) b.classList.add("reveal");

@@ -360,6 +360,37 @@
 
     // ── answer handling ──────────────────────────────────────────────────────
 
+    function playFeedback(correct) {
+      const ctx  = new (window.AudioContext || window.webkitAudioContext)();
+      const gain = ctx.createGain();
+      gain.connect(ctx.destination);
+
+      if (correct) {
+        // two ascending sine tones
+        [523, 784].forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          osc.type = "sine";
+          osc.frequency.value = freq;
+          osc.connect(gain);
+          gain.gain.setValueAtTime(0.25, ctx.currentTime + i * 0.12);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.22);
+          osc.start(ctx.currentTime + i * 0.12);
+          osc.stop(ctx.currentTime + i * 0.12 + 0.22);
+        });
+      } else {
+        // descending sawtooth buzz
+        const osc = ctx.createOscillator();
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(280, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.35);
+        osc.connect(gain);
+        gain.gain.setValueAtTime(0.18, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.35);
+      }
+    }
+
     function handleChoice(btn, value) {
       if (locked) return;
       locked = true;
@@ -373,11 +404,13 @@
         correct++;
         // remove from pool — answered correctly, won't appear again
         questionPool = questionPool.filter(q => q !== currentQuestion);
+        playFeedback(true);
         btn.classList.add("correct");
         feedback.textContent = "Doğru! +1";
         feedback.className = "feedback success";
       } else {
         score--;
+        playFeedback(false);
         btn.classList.add("wrong");
         // keep in pool — will be asked again
         allBtns.forEach(b => {
