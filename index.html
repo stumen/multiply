@@ -6,15 +6,15 @@
   <title>Çarpma Oyunu</title>
   <style>
     :root {
-      --bg-top: #ffe7b3;
-      --bg-bottom: #ffd1dc;
-      --card: rgba(255, 255, 255, 0.88);
-      --text: #20304a;
-      --accent: #ff7a59;
-      --accent-strong: #ff5b37;
-      --success: #1f9d68;
-      --error: #d64545;
-      --shadow: 0 22px 60px rgba(53, 41, 85, 0.18);
+      --bg-top: #fde047;
+      --bg-bottom: #f472b6;
+      --card: rgba(255, 255, 255, 0.93);
+      --text: #2d1760;
+      --accent: #8b5cf6;
+      --accent-strong: #7c3aed;
+      --success: #16a34a;
+      --error: #dc2626;
+      --shadow: 0 22px 60px rgba(139, 92, 246, 0.30);
     }
 
     * { box-sizing: border-box; }
@@ -45,7 +45,7 @@
 
     .hero {
       padding: 28px 28px 18px;
-      background: linear-gradient(135deg, rgba(255,122,89,0.22), rgba(255,233,130,0.38));
+      background: linear-gradient(135deg, rgba(139,92,246,0.20), rgba(253,224,71,0.38));
     }
 
     h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); line-height: 1; }
@@ -79,17 +79,17 @@
     }
 
     .number-btn {
-      background: #fff3d9;
+      background: #f5f3ff;
       color: var(--text);
       font-size: 1.35rem;
       font-weight: 700;
-      box-shadow: 0 8px 16px rgba(255,122,89,0.15);
+      box-shadow: 0 8px 16px rgba(139,92,246,0.18);
     }
 
     .number-btn:hover, .number-btn:focus-visible,
     .primary-btn:hover, .primary-btn:focus-visible {
       transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(53,41,85,0.16);
+      box-shadow: 0 12px 24px rgba(139,92,246,0.22);
       outline: none;
     }
 
@@ -118,7 +118,7 @@
     }
 
     .pill {
-      background: #fff3d9;
+      background: #f5f3ff;
       border-radius: 999px;
       padding: 8px 14px;
       font-weight: 700;
@@ -144,27 +144,27 @@
     }
 
     .choice-btn {
-      background: #fff3d9;
+      background: #f5f3ff;
       color: var(--text);
       font-size: 1.6rem;
       font-weight: 800;
       text-align: center;
-      box-shadow: 0 8px 20px rgba(255,122,89,0.13);
+      box-shadow: 0 8px 20px rgba(139,92,246,0.15);
       padding: 22px 10px;
     }
 
     .choice-btn:hover:not(:disabled), .choice-btn:focus-visible:not(:disabled) {
       transform: translateY(-3px);
-      box-shadow: 0 14px 28px rgba(53,41,85,0.16);
+      box-shadow: 0 14px 28px rgba(139,92,246,0.22);
       outline: none;
-      background: #ffe8b2;
+      background: #ede9fe;
     }
 
     .choice-btn:disabled { cursor: default; }
 
-    .choice-btn.correct { background: #d4f5e5; color: var(--success); }
-    .choice-btn.wrong   { background: #fde0e0; color: var(--error); }
-    .choice-btn.reveal  { background: #d4f5e5; color: var(--success); }
+    .choice-btn.correct { background: #dcfce7; color: #15803d; }
+    .choice-btn.wrong   { background: #fee2e2; color: var(--error); }
+    .choice-btn.reveal  { background: #dcfce7; color: #15803d; }
 
     /* --- feedback --- */
     .feedback {
@@ -223,7 +223,7 @@
     <section class="hero">
       <div class="hero-top">
         <h1>Çarpma Oyunu</h1>
-        <a href="learn.html" style="font:inherit;font-size:0.9rem;font-weight:700;color:#1f9d68;background:rgba(255,255,255,0.7);border:2px solid rgba(31,157,104,0.3);border-radius:999px;padding:7px 14px;text-decoration:none;white-space:nowrap;">Öğrenme Modu →</a>
+        <a href="learn.html" style="font:inherit;font-size:0.9rem;font-weight:700;color:#7c3aed;background:rgba(255,255,255,0.78);border:2px solid rgba(139,92,246,0.35);border-radius:999px;padding:7px 14px;text-decoration:none;white-space:nowrap;">Öğrenme Modu →</a>
       </div>
       <p class="subtitle">Çalışmak istediğin sayıları seç — her sayı için 30 saniye verilir.</p>
     </section>

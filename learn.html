@@ -6,12 +6,12 @@
   <title>Çarpma — Öğrenme Modu</title>
   <style>
     :root {
-      --bg-top: #c8f0e8;
-      --bg-bottom: #b8dff5;
-      --card: rgba(255,255,255,0.88);
-      --text: #20304a;
-      --accent: #2eaa82;
-      --shadow: 0 22px 60px rgba(30,60,80,0.18);
+      --bg-top: #67e8f9;
+      --bg-bottom: #c4b5fd;
+      --card: rgba(255,255,255,0.93);
+      --text: #1e1b4b;
+      --accent: #f97316;
+      --shadow: 0 22px 60px rgba(124,58,237,0.24);
 
       --c-neutral-bg:  #f0f0f0;  --c-neutral-bar:  #bbb;
       --c-lg-bg:       #d4f5e5;  --c-lg-bar:       #4caf7d;
@@ -51,7 +51,7 @@
     /* ── hero ── */
     .hero {
       padding: 24px 28px 16px;
-      background: linear-gradient(135deg, rgba(46,170,130,0.18), rgba(130,210,255,0.30));
+      background: linear-gradient(135deg, rgba(249,115,22,0.18), rgba(103,232,249,0.30));
     }
     .hero-top {
       display: flex;
@@ -67,7 +67,7 @@
       font-weight: 700;
       color: var(--accent);
       background: rgba(255,255,255,0.75);
-      border: 2px solid rgba(46,170,130,0.3);
+      border: 2px solid rgba(249,115,22,0.35);
       border-radius: 999px;
       padding: 6px 14px;
       text-decoration: none;
@@ -100,11 +100,11 @@
       padding: 12px 8px;
       font-size: 1.3rem;
       font-weight: 700;
-      background: #e0f7f1;
+      background: #fff7ed;
       color: var(--text);
       cursor: pointer;
       position: relative;
-      box-shadow: 0 6px 14px rgba(46,170,130,0.15);
+      box-shadow: 0 6px 14px rgba(249,115,22,0.18);
       transition: transform 130ms, box-shadow 130ms, background 130ms;
     }
     .number-btn:hover { transform: translateY(-2px); }
@@ -114,7 +114,7 @@
     .mbadge {
       position: absolute;
       top: -5px; right: -5px;
-      background: #1b7a45;
+      background: #c2410c;
       color: white;
       font-size: 0.58rem;
       font-weight: 800;
@@ -161,7 +161,7 @@
     .progress-wrap { margin-top: 14px; }
     .progress-label { font-size: 0.9rem; color: #555; margin-bottom: 5px; }
     .progress-track {
-      background: #d0ede7;
+      background: #fed7aa;
       border-radius: 999px;
       height: 9px;
       overflow: hidden;
@@ -190,7 +190,7 @@
       padding: 7px 2px;
       font-size: 0.95rem;
       font-weight: 800;
-      background: #e0f7f1;
+      background: #fff7ed;
       color: var(--text);
       border: 3px solid transparent;
       transition: border-color 200ms;
@@ -210,7 +210,7 @@
       margin-bottom: 4px;
     }
     .pill {
-      background: #d4ede8;
+      background: #fef3c7;
       border-radius: 999px;
       padding: 7px 14px;
       font-weight: 700;
@@ -234,20 +234,20 @@
       border: 0;
       border-radius: 16px;
       padding: 20px 8px;
-      background: #e0f7f1;
+      background: #fff7ed;
       color: var(--text);
       font-size: 1.55rem;
       font-weight: 800;
       text-align: center;
-      box-shadow: 0 7px 18px rgba(46,170,130,0.13);
+      box-shadow: 0 7px 18px rgba(249,115,22,0.16);
       cursor: pointer;
       transition: transform 130ms, box-shadow 130ms, background 130ms;
     }
-    .choice-btn:hover:not(:disabled) { transform: translateY(-3px); background: #c2ede3; }
+    .choice-btn:hover:not(:disabled) { transform: translateY(-3px); background: #fed7aa; }
     .choice-btn:disabled { cursor: default; }
-    .choice-btn.correct { background: #d4f5e5; color: #1b7a45; }
+    .choice-btn.correct { background: #dcfce7; color: #15803d; }
     .choice-btn.wrong   { background: #ffcdd2; color: #c62828; }
-    .choice-btn.reveal  { background: #d4f5e5; color: #1b7a45; }
+    .choice-btn.reveal  { background: #dcfce7; color: #15803d; }
 
     .feedback {
       min-height: 1.8rem;
@@ -256,7 +256,7 @@
       font-weight: 700;
       margin-top: 12px;
     }
-    .feedback.ok  { color: #1b7a45; }
+    .feedback.ok  { color: #15803d; }
     .feedback.err { color: #c62828; }
 
     /* ── summary ── */
