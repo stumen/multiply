@@ -180,22 +180,21 @@
     }
     .trow {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 2px;
       border-radius: 10px;
-      padding: 8px 2px;
+      padding: 7px 2px;
       font-size: 0.95rem;
       font-weight: 800;
+      background: #e0f7f1;
+      color: var(--text);
       border: 3px solid transparent;
-      transition: background 300ms, border-color 300ms;
+      transition: border-color 200ms;
     }
     .trow.current { border-color: var(--accent); }
-
-    .trow.s-n  { background: var(--c-neutral-bg); color: #888; }
-    .trow.s-lg { background: var(--c-lg-bg);      color: #1b7a45; }
-    .trow.s-dg { background: var(--c-dg-bg);      color: #1b5e20; }
-    .trow.s-or { background: var(--c-or-bg);      color: #e65100; }
-    .trow.s-rd { background: var(--c-rd-bg);      color: #c62828; }
+    .trow-emoji { font-size: 0.85rem; line-height: 1; }
 
     /* ── quiz top pills ── */
     .quiz-top {
@@ -358,8 +357,7 @@
   const STORAGE_KEY = "multiply_states_v2";
 
   // state codes: n=neutral, lg=light-green, dg=dark-green, or=orange, rd=red
-  const STATE_CLASS = { n: "s-n", lg: "s-lg", dg: "s-dg", or: "s-or", rd: "s-rd" };
-  const STATE_ICON  = { n: "", lg: "●", dg: "✓✓", or: "!", rd: "!!" };
+  const STATE_EMOJI = { n: "", lg: "🙂", dg: "⭐", or: "😕", rd: "😰" };
 
   // ── state ─────────────────────────────────────────────────────────────────
   let selectedNumber  = null;
@@ -419,12 +417,10 @@
     for (let m = 1; m <= 10; m++) {
       const st  = getState(d, n, m);
       const row = document.createElement("div");
-      row.className = `trow ${STATE_CLASS[st]}`;
+      row.className = "trow";
       row.dataset.m = m;
-      if (currentQ && currentQ.factorB === m) {
-        row.classList.add("current");
-      }
-      row.textContent = m;
+      if (currentQ && currentQ.factorB === m) row.classList.add("current");
+      row.innerHTML = `<span>${m}</span><span class="trow-emoji">${STATE_EMOJI[st]}</span>`;
       container.appendChild(row);
     }
   }
@@ -434,10 +430,9 @@
     const st  = getState(d, selectedNumber, m);
     const row = quizTable.querySelector(`[data-m="${m}"]`);
     if (!row) return;
-    row.className = `trow ${STATE_CLASS[st]}`;
-    if (currentQuestion && currentQuestion.factorB === m) {
-      row.classList.add("current");
-    }
+    row.className = "trow";
+    if (currentQuestion && currentQuestion.factorB === m) row.classList.add("current");
+    row.querySelector(".trow-emoji").textContent = STATE_EMOJI[st];
   }
 
   function highlightCurrentRow() {
