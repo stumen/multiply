@@ -8,13 +8,16 @@
     :root {
       --bg-top: #c8f0e8;
       --bg-bottom: #b8dff5;
-      --card: rgba(255, 255, 255, 0.88);
+      --card: rgba(255,255,255,0.88);
       --text: #20304a;
       --accent: #2eaa82;
-      --accent-strong: #1f9d68;
-      --success: #1f9d68;
-      --error: #d64545;
-      --shadow: 0 22px 60px rgba(30, 60, 80, 0.18);
+      --shadow: 0 22px 60px rgba(30,60,80,0.18);
+
+      --c-neutral-bg:  #f0f0f0;  --c-neutral-bar:  #bbb;
+      --c-lg-bg:       #d4f5e5;  --c-lg-bar:       #4caf7d;
+      --c-dg-bg:       #a5d6a7;  --c-dg-bar:       #1b7a45;
+      --c-or-bg:       #ffe0b2;  --c-or-bar:       #fb8c00;
+      --c-rd-bg:       #ffcdd2;  --c-rd-bar:       #e53935;
     }
 
     * { box-sizing: border-box; }
@@ -34,7 +37,7 @@
     }
 
     .game {
-      width: min(100%, 760px);
+      width: min(100%, 780px);
       background: var(--card);
       border: 4px solid rgba(255,255,255,0.7);
       border-radius: 32px;
@@ -43,619 +46,644 @@
       backdrop-filter: blur(8px);
     }
 
+    /* ── hero ── */
     .hero {
-      padding: 28px 28px 18px;
-      background: linear-gradient(135deg, rgba(46,170,130,0.18), rgba(130,210,255,0.32));
+      padding: 24px 28px 16px;
+      background: linear-gradient(135deg, rgba(46,170,130,0.18), rgba(130,210,255,0.30));
     }
-
     .hero-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       gap: 12px;
     }
-
-    h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); line-height: 1; }
-
+    h1 { margin: 0; font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1; }
+    .subtitle { margin: 8px 0 0; font-size: 0.98rem; opacity: 0.8; }
     .nav-link {
       font: inherit;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 700;
-      color: var(--accent-strong);
-      background: rgba(255,255,255,0.7);
+      color: var(--accent);
+      background: rgba(255,255,255,0.75);
       border: 2px solid rgba(46,170,130,0.3);
       border-radius: 999px;
-      padding: 7px 14px;
-      cursor: pointer;
+      padding: 6px 14px;
       text-decoration: none;
       white-space: nowrap;
-      transition: background 140ms ease;
+      transition: background 140ms;
     }
-    .nav-link:hover { background: rgba(255,255,255,0.95); }
+    .nav-link:hover { background: white; }
 
-    .subtitle { margin: 10px 0 0; font-size: 1.05rem; }
-
-    .content { padding: 24px 28px 32px; display: grid; gap: 20px; }
+    /* ── layout ── */
+    .content { padding: 20px 28px 28px; display: grid; gap: 16px; }
 
     .panel {
-      background: rgba(255,255,255,0.75);
+      background: rgba(255,255,255,0.78);
       border-radius: 24px;
-      padding: 22px;
+      padding: 20px;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
     }
 
-    .choices {
+    /* ── number buttons ── */
+    .number-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(66px, 1fr));
-      gap: 12px;
-      margin-top: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(58px, 1fr));
+      gap: 10px;
+      margin-top: 14px;
     }
-
     button { font: inherit; }
-
-    .number-btn, .primary-btn, .choice-btn {
-      border: 0;
-      border-radius: 18px;
-      padding: 14px 16px;
-      cursor: pointer;
-      transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
-    }
-
     .number-btn {
+      border: 0;
+      border-radius: 16px;
+      padding: 12px 8px;
+      font-size: 1.3rem;
+      font-weight: 700;
       background: #e0f7f1;
       color: var(--text);
-      font-size: 1.25rem;
-      font-weight: 700;
-      box-shadow: 0 8px 16px rgba(46,170,130,0.15);
+      cursor: pointer;
       position: relative;
+      box-shadow: 0 6px 14px rgba(46,170,130,0.15);
+      transition: transform 130ms, box-shadow 130ms, background 130ms;
     }
-
-    .number-btn:hover, .number-btn:focus-visible,
-    .primary-btn:hover, .primary-btn:focus-visible {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(30,60,80,0.16);
-      outline: none;
-    }
-
+    .number-btn:hover { transform: translateY(-2px); }
     .number-btn.active { background: var(--accent); color: white; }
 
-    /* mastery badge on number buttons */
-    .mastery-badge {
+    /* mastery badge */
+    .mbadge {
       position: absolute;
-      top: -6px;
-      right: -6px;
-      background: var(--success);
+      top: -5px; right: -5px;
+      background: #1b7a45;
       color: white;
-      font-size: 0.6rem;
+      font-size: 0.58rem;
       font-weight: 800;
       border-radius: 999px;
       padding: 2px 5px;
       line-height: 1.4;
     }
 
+    /* ── primary / ghost buttons ── */
     .primary-btn {
+      border: 0;
+      border-radius: 16px;
+      padding: 13px 28px;
       background: var(--accent);
       color: white;
       font-weight: 700;
+      cursor: pointer;
+      transition: transform 130ms, box-shadow 130ms;
     }
-
-    .primary-btn:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
+    .primary-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(30,60,80,0.16); }
+    .primary-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
 
     .ghost-btn {
-      background: transparent;
       border: 2px solid #ccc;
-      border-radius: 18px;
-      padding: 12px 20px;
+      border-radius: 16px;
+      padding: 11px 20px;
+      background: transparent;
       color: #888;
       font-weight: 700;
       cursor: pointer;
-      transition: border-color 140ms, color 140ms;
+      transition: border-color 130ms, color 130ms;
     }
-    .ghost-btn:hover { border-color: var(--error); color: var(--error); }
-
-    /* quiz top bar */
-    .quiz-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .pill {
-      background: #e0f7f1;
-      border-radius: 999px;
-      padding: 8px 14px;
-      font-weight: 700;
-    }
-
-    /* streak dots */
-    .streak-row {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 12px 0 4px;
-    }
-
-    .streak-dot {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      border: 3px solid var(--accent);
-      background: transparent;
-      transition: background 300ms ease;
-    }
-    .streak-dot.filled { background: var(--accent); }
-
-    /* question */
-    .question {
-      font-size: clamp(2.4rem, 8vw, 4.4rem);
-      text-align: center;
-      font-weight: 800;
-      margin: 6px 0 10px;
-      letter-spacing: 0.04em;
-    }
-
-    /* multiple choice */
-    .mc-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-top: 14px;
-    }
-
-    .choice-btn {
-      background: #e0f7f1;
-      color: var(--text);
-      font-size: 1.6rem;
-      font-weight: 800;
-      text-align: center;
-      box-shadow: 0 8px 20px rgba(46,170,130,0.13);
-      padding: 22px 10px;
-    }
-
-    .choice-btn:hover:not(:disabled), .choice-btn:focus-visible:not(:disabled) {
-      transform: translateY(-3px);
-      box-shadow: 0 14px 28px rgba(30,60,80,0.16);
-      outline: none;
-      background: #c2ede3;
-    }
-
-    .choice-btn:disabled { cursor: default; }
-    .choice-btn.correct { background: #d4f5e5; color: var(--success); }
-    .choice-btn.wrong   { background: #fde0e0; color: var(--error); }
-    .choice-btn.reveal  { background: #d4f5e5; color: var(--success); }
-
-    /* feedback */
-    .feedback {
-      min-height: 2rem;
-      text-align: center;
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-top: 14px;
-    }
-    .feedback.success { color: var(--success); }
-    .feedback.error   { color: var(--error); }
-
-    /* mastery bar on setup */
-    .mastery-summary {
-      margin-top: 16px;
-      font-size: 0.95rem;
-      color: #555;
-    }
-
-    .mastery-bar-wrap {
-      background: #ddf0ea;
-      border-radius: 999px;
-      height: 10px;
-      margin-top: 6px;
-      overflow: hidden;
-    }
-
-    .mastery-bar-fill {
-      height: 100%;
-      background: var(--accent);
-      border-radius: 999px;
-      transition: width 400ms ease;
-    }
-
-    /* summary */
-    .summary { text-align: center; }
-    .summary strong { font-size: 1.3rem; }
+    .ghost-btn:hover { border-color: #e53935; color: #e53935; }
 
     .answer-row {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
       justify-content: center;
-      margin-top: 18px;
+      margin-top: 16px;
+    }
+
+    /* ── mastery progress bar ── */
+    .progress-wrap { margin-top: 14px; }
+    .progress-label { font-size: 0.9rem; color: #555; margin-bottom: 5px; }
+    .progress-track {
+      background: #d0ede7;
+      border-radius: 999px;
+      height: 9px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 999px;
+      transition: width 400ms ease;
+    }
+
+    /* ── multiplication table ── */
+    .mult-table {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 5px;
+      margin: 12px 0 16px;
+    }
+    .trow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      padding: 8px 2px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      border: 3px solid transparent;
+      transition: background 300ms, border-color 300ms;
+    }
+    .trow.current { border-color: var(--accent); }
+
+    .trow.s-n  { background: var(--c-neutral-bg); color: #888; }
+    .trow.s-lg { background: var(--c-lg-bg);      color: #1b7a45; }
+    .trow.s-dg { background: var(--c-dg-bg);      color: #1b5e20; }
+    .trow.s-or { background: var(--c-or-bg);      color: #e65100; }
+    .trow.s-rd { background: var(--c-rd-bg);      color: #c62828; }
+
+    /* ── quiz top pills ── */
+    .quiz-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .pill {
+      background: #d4ede8;
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    /* ── question & choices ── */
+    .question {
+      font-size: clamp(2.2rem, 7vw, 3.8rem);
+      text-align: center;
+      font-weight: 800;
+      margin: 4px 0 10px;
+      letter-spacing: 0.04em;
+    }
+    .mc-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .choice-btn {
+      border: 0;
+      border-radius: 16px;
+      padding: 20px 8px;
+      background: #e0f7f1;
+      color: var(--text);
+      font-size: 1.55rem;
+      font-weight: 800;
+      text-align: center;
+      box-shadow: 0 7px 18px rgba(46,170,130,0.13);
+      cursor: pointer;
+      transition: transform 130ms, box-shadow 130ms, background 130ms;
+    }
+    .choice-btn:hover:not(:disabled) { transform: translateY(-3px); background: #c2ede3; }
+    .choice-btn:disabled { cursor: default; }
+    .choice-btn.correct { background: #d4f5e5; color: #1b7a45; }
+    .choice-btn.wrong   { background: #ffcdd2; color: #c62828; }
+    .choice-btn.reveal  { background: #d4f5e5; color: #1b7a45; }
+
+    .feedback {
+      min-height: 1.8rem;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-top: 12px;
+    }
+    .feedback.ok  { color: #1b7a45; }
+    .feedback.err { color: #c62828; }
+
+    /* ── summary ── */
+    .summary { text-align: center; }
+    .summary strong { font-size: 1.25rem; }
+    .summary p { margin: 8px 0; }
+
+    /* ── legend ── */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .legend-dot {
+      width: 12px; height: 12px;
+      border-radius: 3px;
     }
 
     .hidden { display: none; }
 
-    @media (max-width: 640px) {
-      .hero, .content { padding-left: 18px; padding-right: 18px; }
-      .panel { padding: 18px; }
-      .mc-grid { gap: 10px; }
-      .choice-btn { font-size: 1.3rem; padding: 18px 8px; }
+    @media (max-width: 600px) {
+      .content { padding: 16px 18px 24px; }
+      .panel { padding: 16px; }
+      .mc-grid { gap: 8px; }
+      .choice-btn { font-size: 1.25rem; padding: 16px 6px; }
     }
   </style>
 </head>
 <body>
-  <main class="game">
-    <section class="hero">
-      <div class="hero-top">
-        <h1>Öğrenme Modu</h1>
-        <a class="nav-link" href="index.html">Test Modu →</a>
+<main class="game">
+  <section class="hero">
+    <div class="hero-top">
+      <h1>Öğrenme Modu</h1>
+      <a class="nav-link" href="index.html">Test Modu →</a>
+    </div>
+    <p class="subtitle">Bir sayı seç — soruları doğru bil ve renklerini yeşile çevir.</p>
+  </section>
+
+  <section class="content">
+
+    <!-- Setup -->
+    <section class="panel" id="setup-panel">
+      <h2 style="margin:0 0 4px;">Hangi sayıyı çalışmak istiyorsun?</h2>
+      <div class="number-grid" id="number-grid"></div>
+
+      <div class="progress-wrap hidden" id="progress-wrap">
+        <div class="progress-label" id="progress-label"></div>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
       </div>
-      <p class="subtitle">Yanlış cevaplar sıfırdan başlar — her soruyu arka arkaya 2 kez doğru bil ve ustalaş.</p>
+
+      <!-- table preview in setup -->
+      <div class="mult-table hidden" id="setup-table"></div>
+
+      <!-- legend -->
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-neutral-bar)"></div> Hiç cevaplanmadı</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-lg-bar)"></div> 1. doğru</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-dg-bar)"></div> Ustalaşıldı</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-or-bar)"></div> 1. yanlış</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-rd-bar)"></div> 2. yanlış</div>
+      </div>
+
+      <div class="answer-row">
+        <button class="primary-btn" id="start-btn" type="button" disabled>Başlat</button>
+        <button class="ghost-btn"   id="reset-btn" type="button">İlerlemeyi Sıfırla</button>
+      </div>
     </section>
 
-    <section class="content">
+    <!-- Quiz -->
+    <section class="panel hidden" id="quiz-panel">
+      <div class="quiz-top">
+        <div class="pill" id="remaining-pill">Kaldı: 0</div>
+        <div class="pill" id="mastered-pill">Ustalaşılan: 0 / 10</div>
+      </div>
 
-      <!-- Setup -->
-      <section class="panel" id="setup-panel">
-        <h2>Hangi sayıları çalışmak istiyorsun?</h2>
-        <div class="choices" id="number-choices" aria-label="2'den 10'a kadar sayılar"></div>
+      <div class="mult-table" id="quiz-table"></div>
 
-        <div class="mastery-summary" id="mastery-summary"></div>
-
-        <div class="answer-row" style="margin-top:20px;">
-          <button class="primary-btn" id="start-btn" type="button" disabled>Başlat</button>
-          <button class="ghost-btn"   id="reset-btn" type="button">İlerlemeyi Sıfırla</button>
-        </div>
-      </section>
-
-      <!-- Quiz -->
-      <section class="panel hidden" id="quiz-panel">
-        <div class="quiz-top">
-          <div class="pill" id="remaining-pill">Kaldı: 0</div>
-          <div class="pill" id="mastered-pill">Ustalaşılan: 0</div>
-        </div>
-
-        <div class="streak-row" id="streak-row">
-          <div class="streak-dot" id="dot-0"></div>
-          <div class="streak-dot" id="dot-1"></div>
-        </div>
-
-        <div class="question" id="question-text"></div>
-
-        <div class="mc-grid" id="mc-grid"></div>
-
-        <div class="feedback" id="feedback"></div>
-      </section>
-
-      <!-- Summary -->
-      <section class="panel summary hidden" id="summary-panel">
-        <p><strong id="summary-text"></strong></p>
-        <p id="summary-detail"></p>
-        <p id="summary-total"></p>
-        <div class="answer-row">
-          <button class="primary-btn" id="play-again-btn" type="button">Tekrar Çalış</button>
-        </div>
-      </section>
-
+      <div class="question" id="question-text"></div>
+      <div class="mc-grid"  id="mc-grid"></div>
+      <div class="feedback" id="feedback"></div>
     </section>
-  </main>
 
-  <script>
-    // ── DOM refs ──────────────────────────────────────────────────────────────
-    const numberChoices  = document.getElementById("number-choices");
-    const startBtn       = document.getElementById("start-btn");
-    const resetBtn       = document.getElementById("reset-btn");
-    const playAgainBtn   = document.getElementById("play-again-btn");
-    const setupPanel     = document.getElementById("setup-panel");
-    const quizPanel      = document.getElementById("quiz-panel");
-    const summaryPanel   = document.getElementById("summary-panel");
-    const remainingPill  = document.getElementById("remaining-pill");
-    const masteredPill   = document.getElementById("mastered-pill");
-    const dot0           = document.getElementById("dot-0");
-    const dot1           = document.getElementById("dot-1");
-    const questionText   = document.getElementById("question-text");
-    const mcGrid         = document.getElementById("mc-grid");
-    const feedback       = document.getElementById("feedback");
-    const summaryText    = document.getElementById("summary-text");
-    const summaryDetail  = document.getElementById("summary-detail");
-    const summaryTotal   = document.getElementById("summary-total");
-    const masterySummary = document.getElementById("mastery-summary");
+    <!-- Summary -->
+    <section class="panel summary hidden" id="summary-panel">
+      <p><strong id="summary-text"></strong></p>
+      <p id="summary-detail"></p>
+      <p id="summary-total"></p>
+      <div class="answer-row">
+        <button class="primary-btn" id="play-again-btn" type="button">Tekrar Çalış</button>
+      </div>
+    </section>
 
-    // ── constants ─────────────────────────────────────────────────────────────
-    const STORAGE_KEY   = "multiply_mastery";
-    const NEEDED        = 2;   // consecutive correct answers to master a question
+  </section>
+</main>
 
-    // ── state ─────────────────────────────────────────────────────────────────
-    const selectedNumbers = new Set();
-    let questionQueue  = [];   // unmastered questions for this session
-    let currentQuestion = null;
-    let locked = false;
-    let sessionMastered = 0;   // newly mastered this session
-    let sessionAttempts = 0;
+<script>
+  // ── DOM refs ─────────────────────────────────────────────────────────────
+  const numberGrid    = document.getElementById("number-grid");
+  const startBtn      = document.getElementById("start-btn");
+  const resetBtn      = document.getElementById("reset-btn");
+  const playAgainBtn  = document.getElementById("play-again-btn");
+  const setupPanel    = document.getElementById("setup-panel");
+  const quizPanel     = document.getElementById("quiz-panel");
+  const summaryPanel  = document.getElementById("summary-panel");
+  const remainingPill = document.getElementById("remaining-pill");
+  const masteredPill  = document.getElementById("mastered-pill");
+  const questionText  = document.getElementById("question-text");
+  const mcGrid        = document.getElementById("mc-grid");
+  const feedback      = document.getElementById("feedback");
+  const summaryText   = document.getElementById("summary-text");
+  const summaryDetail = document.getElementById("summary-detail");
+  const summaryTotal  = document.getElementById("summary-total");
+  const setupTable    = document.getElementById("setup-table");
+  const quizTable     = document.getElementById("quiz-table");
+  const progressWrap  = document.getElementById("progress-wrap");
+  const progressLabel = document.getElementById("progress-label");
+  const progressFill  = document.getElementById("progress-fill");
 
-    // ── persistence ───────────────────────────────────────────────────────────
+  // ── constants ─────────────────────────────────────────────────────────────
+  const STORAGE_KEY = "multiply_states_v2";
 
-    function loadMastery() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
-      catch { return {}; }
+  // state codes: n=neutral, lg=light-green, dg=dark-green, or=orange, rd=red
+  const STATE_CLASS = { n: "s-n", lg: "s-lg", dg: "s-dg", or: "s-or", rd: "s-rd" };
+  const STATE_ICON  = { n: "", lg: "●", dg: "✓✓", or: "!", rd: "!!" };
+
+  // ── state ─────────────────────────────────────────────────────────────────
+  let selectedNumber  = null;
+  let questionQueue   = [];
+  let currentQuestion = null;
+  let locked          = false;
+  let sessionMastered = 0;
+  let sessionAttempts = 0;
+
+  // ── persistence ───────────────────────────────────────────────────────────
+  function loadData() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch { return {}; }
+  }
+  function saveData(d) { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+  function stateKey(n, m) { return `${n}_${m}`; }
+  function getState(d, n, m) { return d[stateKey(n, m)] || "n"; }
+
+  function nextState(current, correct) {
+    if (correct) {
+      if (current === "dg") return "dg";
+      if (current === "lg") return "dg";
+      return "lg";   // n, or, rd → lg
+    } else {
+      if (current === "or" || current === "rd") return "rd";
+      return "or";   // n, lg → or
     }
+  }
 
-    function saveMastery(data) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  // ── helpers ───────────────────────────────────────────────────────────────
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
     }
+    return a;
+  }
 
-    function masteryKey(q) {
-      return `${q.factorA}_${q.factorB}`;
-    }
-
-    function getStreak(data, q) {
-      return data[masteryKey(q)] || 0;
-    }
-
-    function isMastered(data, q) {
-      return getStreak(data, q) >= NEEDED;
-    }
-
-    // ── helpers ───────────────────────────────────────────────────────────────
-
-    function shuffle(arr) {
-      const a = [...arr];
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
+  function generateChoices(correct) {
+    const offs = shuffle([-7,-6,-5,-4,-3,-2,-1,1,2,3,4,5,6,7]);
+    const wrong = [];
+    for (const o of offs) {
+      const c = correct + o;
+      if (c > 0 && c !== correct && !wrong.includes(c)) {
+        wrong.push(c);
+        if (wrong.length === 2) break;
       }
-      return a;
     }
+    return shuffle([correct, ...wrong]);
+  }
 
-    function allQuestions(numbers) {
-      const list = [];
-      for (const n of numbers) {
-        for (let m = 1; m <= 10; m++) {
-          list.push({ factorA: n, factorB: m, answer: n * m });
-        }
+  // ── multiplication table rendering ────────────────────────────────────────
+  function renderTable(container, n, currentQ) {
+    const d = loadData();
+    container.innerHTML = "";
+    for (let m = 1; m <= 10; m++) {
+      const st  = getState(d, n, m);
+      const row = document.createElement("div");
+      row.className = `trow ${STATE_CLASS[st]}`;
+      row.dataset.m = m;
+      if (currentQ && currentQ.factorB === m) {
+        row.classList.add("current");
       }
-      return list;
+      row.textContent = m;
+      container.appendChild(row);
     }
+  }
 
-    function generateChoices(correct) {
-      const offsets = shuffle([-7,-6,-5,-4,-3,-2,-1,1,2,3,4,5,6,7]);
-      const wrong = [];
-      for (const offset of offsets) {
-        const c = correct + offset;
-        if (c > 0 && c !== correct && !wrong.includes(c)) {
-          wrong.push(c);
-          if (wrong.length === 2) break;
-        }
+  function updateTableRow(m) {
+    const d   = loadData();
+    const st  = getState(d, selectedNumber, m);
+    const row = quizTable.querySelector(`[data-m="${m}"]`);
+    if (!row) return;
+    row.className = `trow ${STATE_CLASS[st]}`;
+    if (currentQuestion && currentQuestion.factorB === m) {
+      row.classList.add("current");
+    }
+  }
+
+  function highlightCurrentRow() {
+    quizTable.querySelectorAll(".trow").forEach(r => r.classList.remove("current"));
+    if (currentQuestion) {
+      const row = quizTable.querySelector(`[data-m="${currentQuestion.factorB}"]`);
+      if (row) row.classList.add("current");
+    }
+  }
+
+  // ── number button badges ──────────────────────────────────────────────────
+  function refreshBadges() {
+    const d = loadData();
+    numberGrid.querySelectorAll(".number-btn").forEach(btn => {
+      const n = Number(btn.dataset.n);
+      const mastered = [...Array(10)].filter((_,i) => getState(d, n, i+1) === "dg").length;
+      const old = btn.querySelector(".mbadge");
+      if (old) old.remove();
+      if (mastered > 0) {
+        const b = document.createElement("span");
+        b.className = "mbadge";
+        b.textContent = `${mastered}/10`;
+        btn.appendChild(b);
       }
-      return shuffle([correct, ...wrong]);
+    });
+  }
+
+  function updateSetupProgress(n) {
+    const d       = loadData();
+    const mastered = [...Array(10)].filter((_,i) => getState(d, n, i+1) === "dg").length;
+    const pct     = Math.round(mastered / 10 * 100);
+    progressWrap.classList.remove("hidden");
+    progressLabel.textContent = `${mastered} / 10 soruda ustalaştın (%${pct})`;
+    progressFill.style.width  = `${pct}%`;
+  }
+
+  // ── setup buttons ─────────────────────────────────────────────────────────
+  function buildNumberButtons() {
+    for (let n = 2; n <= 10; n++) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "number-btn";
+      btn.dataset.n = n;
+      btn.textContent = n;
+      btn.addEventListener("click", () => selectNumber(n));
+      numberGrid.appendChild(btn);
     }
+    refreshBadges();
+  }
 
-    // ── setup UI ──────────────────────────────────────────────────────────────
+  function selectNumber(n) {
+    selectedNumber = n;
+    numberGrid.querySelectorAll(".number-btn").forEach(b => {
+      b.classList.toggle("active", Number(b.dataset.n) === n);
+    });
+    startBtn.disabled = false;
+    updateSetupProgress(n);
+    setupTable.classList.remove("hidden");
+    renderTable(setupTable, n, null);
+  }
 
-    function buildChoiceButtons() {
-      for (let n = 2; n <= 10; n++) {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "number-btn";
-        btn.dataset.number = n;
-
-        const label = document.createElement("span");
-        label.textContent = n;
-        btn.appendChild(label);
-
-        btn.addEventListener("click", () => {
-          if (selectedNumbers.has(n)) selectedNumbers.delete(n);
-          else selectedNumbers.add(n);
-          btn.classList.toggle("active", selectedNumbers.has(n));
-          startBtn.disabled = selectedNumbers.size === 0;
-          updateMasterySummary();
-        });
-        numberChoices.appendChild(btn);
-      }
-      refreshNumberBadges();
+  // ── queue building ────────────────────────────────────────────────────────
+  function buildQueue(n) {
+    const d = loadData();
+    const groups = { rd: [], or: [], n: [], lg: [] };
+    for (let m = 1; m <= 10; m++) {
+      const st = getState(d, n, m);
+      if (st !== "dg" && groups[st]) groups[st].push({ factorA: n, factorB: m, answer: n * m });
     }
+    // priority: red → orange → neutral → light-green
+    return [
+      ...shuffle(groups.rd),
+      ...shuffle(groups.or),
+      ...shuffle(groups.n),
+      ...shuffle(groups.lg),
+    ];
+  }
 
-    function refreshNumberBadges() {
-      const data = loadMastery();
-      numberChoices.querySelectorAll(".number-btn").forEach(btn => {
-        const n = Number(btn.dataset.number);
-        const qs = allQuestions([n]);
-        const masteredCount = qs.filter(q => isMastered(data, q)).length;
-        const existing = btn.querySelector(".mastery-badge");
-        if (existing) existing.remove();
-        if (masteredCount > 0) {
-          const badge = document.createElement("span");
-          badge.className = "mastery-badge";
-          badge.textContent = `${masteredCount}/${qs.length}`;
-          btn.appendChild(badge);
-        }
-      });
-    }
+  // ── pills ─────────────────────────────────────────────────────────────────
+  function updatePills() {
+    const d       = loadData();
+    const mastered = [...Array(10)].filter((_,i) =>
+      getState(d, selectedNumber, i+1) === "dg").length;
+    remainingPill.textContent = `Kaldı: ${questionQueue.length}`;
+    masteredPill.textContent  = `Ustalaşılan: ${mastered} / 10`;
+  }
 
-    function updateMasterySummary() {
-      if (selectedNumbers.size === 0) {
-        masterySummary.innerHTML = "";
-        return;
-      }
-      const data = loadMastery();
-      const qs = allQuestions([...selectedNumbers]);
-      const masteredCount = qs.filter(q => isMastered(data, q)).length;
-      const pct = Math.round((masteredCount / qs.length) * 100);
-      masterySummary.innerHTML = `
-        <span>${masteredCount} / ${qs.length} soruda ustalaştın (%${pct})</span>
-        <div class="mastery-bar-wrap">
-          <div class="mastery-bar-fill" style="width:${pct}%"></div>
-        </div>`;
-    }
+  // ── quiz ──────────────────────────────────────────────────────────────────
+  function nextQuestion() {
+    if (questionQueue.length === 0) { endGame(); return; }
 
-    // ── quiz ──────────────────────────────────────────────────────────────────
+    locked = false;
+    feedback.textContent = "";
+    feedback.className = "feedback";
 
-    function buildQueue() {
-      const data = loadMastery();
-      const qs = allQuestions([...selectedNumbers]);
-      // unmastered first (streak=0 before streak=1), then shuffle within groups
-      const group0 = shuffle(qs.filter(q => getStreak(data, q) === 0));
-      const group1 = shuffle(qs.filter(q => getStreak(data, q) === 1));
-      return [...group0, ...group1];
-    }
+    currentQuestion = questionQueue[0];
+    questionText.textContent =
+      `${currentQuestion.factorA} × ${currentQuestion.factorB} = ?`;
 
-    function updatePills() {
-      const data = loadMastery();
-      const total = allQuestions([...selectedNumbers]).length;
-      const masteredCount = allQuestions([...selectedNumbers]).filter(q => isMastered(data, q)).length;
-      remainingPill.textContent = `Kaldı: ${questionQueue.length}`;
-      masteredPill.textContent  = `Ustalaşılan: ${masteredCount} / ${total}`;
-    }
+    highlightCurrentRow();
 
-    function updateStreakDots(streak) {
-      dot0.classList.toggle("filled", streak >= 1);
-      dot1.classList.toggle("filled", streak >= 2);
-    }
+    const choices = generateChoices(currentQuestion.answer);
+    mcGrid.innerHTML = "";
+    choices.forEach(val => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "choice-btn";
+      btn.textContent = val;
+      btn.addEventListener("click", () => handleChoice(btn, val));
+      mcGrid.appendChild(btn);
+    });
+  }
 
-    function nextQuestion() {
-      if (questionQueue.length === 0) {
-        endGame();
-        return;
-      }
-      locked = false;
-      feedback.textContent = "";
-      feedback.className = "feedback";
+  function handleChoice(btn, value) {
+    if (locked) return;
+    locked = true;
+    sessionAttempts++;
 
-      currentQuestion = questionQueue[0];
-      const data = loadMastery();
-      const streak = getStreak(data, currentQuestion);
-      updateStreakDots(streak);
+    mcGrid.querySelectorAll(".choice-btn").forEach(b => b.disabled = true);
 
-      questionText.textContent = `${currentQuestion.factorA} × ${currentQuestion.factorB} = ?`;
+    const d    = loadData();
+    const n    = currentQuestion.factorA;
+    const m    = currentQuestion.factorB;
+    const prev = getState(d, n, m);
+    const correct = value === currentQuestion.answer;
+    const next = nextState(prev, correct);
 
-      const choices = generateChoices(currentQuestion.answer);
-      mcGrid.innerHTML = "";
-      choices.forEach(value => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "choice-btn";
-        btn.textContent = value;
-        btn.addEventListener("click", () => handleChoice(btn, value));
-        mcGrid.appendChild(btn);
-      });
-    }
+    d[stateKey(n, m)] = next;
+    saveData(d);
+    updateTableRow(m);
 
-    function handleChoice(btn, value) {
-      if (locked) return;
-      locked = true;
-      sessionAttempts++;
+    if (correct) {
+      btn.classList.add("correct");
+      questionQueue.shift();
 
-      const allBtns = mcGrid.querySelectorAll(".choice-btn");
-      allBtns.forEach(b => b.disabled = true);
-
-      const data = loadMastery();
-      const key  = masteryKey(currentQuestion);
-
-      if (value === currentQuestion.answer) {
-        const newStreak = (data[key] || 0) + 1;
-        data[key] = newStreak;
-        saveMastery(data);
-
-        btn.classList.add("correct");
-
-        if (newStreak >= NEEDED) {
-          // mastered — remove from queue
-          questionQueue.shift();
-          sessionMastered++;
-          feedback.textContent = "Ustalaştın! Harika!";
-          feedback.className = "feedback success";
-        } else {
-          // one more correct needed — move to end of queue
-          questionQueue.shift();
-          questionQueue.push(currentQuestion);
-          feedback.textContent = `Doğru! Bir kez daha bil.`;
-          feedback.className = "feedback success";
-        }
+      if (next === "dg") {
+        sessionMastered++;
+        feedback.textContent = "Ustalaştın!";
+        feedback.className = "feedback ok";
       } else {
-        // wrong — reset streak, move to end of queue
-        data[key] = 0;
-        saveMastery(data);
-
-        btn.classList.add("wrong");
-        allBtns.forEach(b => {
-          if (Number(b.textContent) === currentQuestion.answer) b.classList.add("reveal");
-        });
-        feedback.textContent = `Yanlış! Doğru cevap: ${currentQuestion.answer}. Seri sıfırlandı.`;
-        feedback.className = "feedback error";
-
-        // move to end of queue
-        questionQueue.shift();
+        // lg — needs one more correct; move to end
         questionQueue.push(currentQuestion);
+        feedback.textContent = "Doğru! Bir kez daha bil.";
+        feedback.className = "feedback ok";
       }
-
-      updatePills();
-      setTimeout(nextQuestion, 1100);
+    } else {
+      btn.classList.add("wrong");
+      mcGrid.querySelectorAll(".choice-btn").forEach(b => {
+        if (Number(b.textContent) === currentQuestion.answer) b.classList.add("reveal");
+      });
+      feedback.textContent = `Yanlış! Doğru cevap: ${currentQuestion.answer}.`;
+      feedback.className = "feedback err";
+      // move to end of queue
+      questionQueue.shift();
+      questionQueue.push(currentQuestion);
     }
 
-    // ── game flow ─────────────────────────────────────────────────────────────
+    updatePills();
+    setTimeout(nextQuestion, 1100);
+  }
 
-    function startGame() {
-      questionQueue   = buildQueue();
-      sessionMastered = 0;
-      sessionAttempts = 0;
-      locked          = false;
+  // ── game flow ─────────────────────────────────────────────────────────────
+  function startGame() {
+    questionQueue   = buildQueue(selectedNumber);
+    sessionMastered = 0;
+    sessionAttempts = 0;
+    locked          = false;
 
-      if (questionQueue.length === 0) {
-        // everything already mastered
-        setupPanel.classList.add("hidden");
-        summaryPanel.classList.remove("hidden");
-        const total = allQuestions([...selectedNumbers]).length;
-        summaryText.textContent   = "Tüm sorularda zaten ustasın!";
-        summaryDetail.textContent = `Seçilen ${total} sorunun hepsi tamamlandı.`;
-        summaryTotal.textContent  = "";
-        return;
-      }
+    setupPanel.classList.add("hidden");
+    summaryPanel.classList.add("hidden");
+    quizPanel.classList.remove("hidden");
 
-      setupPanel.classList.add("hidden");
-      summaryPanel.classList.add("hidden");
-      quizPanel.classList.remove("hidden");
+    renderTable(quizTable, selectedNumber, null);
+    updatePills();
+    nextQuestion();
+  }
 
-      updatePills();
-      nextQuestion();
-    }
+  function endGame() {
+    quizPanel.classList.add("hidden");
+    summaryPanel.classList.remove("hidden");
 
-    function endGame() {
-      quizPanel.classList.add("hidden");
-      summaryPanel.classList.remove("hidden");
+    const d       = loadData();
+    const mastered = [...Array(10)].filter((_,i) =>
+      getState(d, selectedNumber, i+1) === "dg").length;
 
-      const data  = loadMastery();
-      const total = allQuestions([...selectedNumbers]).length;
-      const masteredCount = allQuestions([...selectedNumbers]).filter(q => isMastered(data, q)).length;
-
+    if (mastered === 10) {
+      summaryText.textContent   = `${selectedNumber} çarpım tablosunda tam ustasın!`;
+    } else {
       summaryText.textContent   = `Bu turda ${sessionMastered} yeni soruda ustalaştın!`;
-      summaryDetail.textContent = `${sessionAttempts} denemede ${sessionMastered} soruyu tamamladın.`;
-      summaryTotal.textContent  = `Toplam ilerleme: ${masteredCount} / ${total} soruda ustasın.`;
-
-      refreshNumberBadges();
     }
+    summaryDetail.textContent = `${sessionAttempts} denemede ${sessionMastered} soruyu tamamladın.`;
+    summaryTotal.textContent  = `Toplam: ${mastered} / 10 soruda ustasın.`;
 
-    // ── wiring ────────────────────────────────────────────────────────────────
+    refreshBadges();
+  }
 
-    startBtn.addEventListener("click", startGame);
+  // ── wiring ────────────────────────────────────────────────────────────────
+  startBtn.addEventListener("click", startGame);
 
-    resetBtn.addEventListener("click", () => {
-      if (!confirm("Tüm ilerleme silinecek. Emin misin?")) return;
-      localStorage.removeItem(STORAGE_KEY);
-      refreshNumberBadges();
-      updateMasterySummary();
-    });
+  resetBtn.addEventListener("click", () => {
+    if (!confirm("Tüm ilerleme silinecek. Emin misin?")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    refreshBadges();
+    if (selectedNumber) {
+      updateSetupProgress(selectedNumber);
+      renderTable(setupTable, selectedNumber, null);
+    }
+  });
 
-    playAgainBtn.addEventListener("click", () => {
-      summaryPanel.classList.add("hidden");
-      setupPanel.classList.remove("hidden");
-      refreshNumberBadges();
-      updateMasterySummary();
-    });
+  playAgainBtn.addEventListener("click", () => {
+    summaryPanel.classList.add("hidden");
+    setupPanel.classList.remove("hidden");
+    refreshBadges();
+    if (selectedNumber) {
+      updateSetupProgress(selectedNumber);
+      renderTable(setupTable, selectedNumber, null);
+    }
+  });
 
-    buildChoiceButtons();
-  </script>
+  buildNumberButtons();
+</script>
 </body>
 </html>
