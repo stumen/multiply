@@ -267,28 +267,6 @@
 
     .hidden { display: none; }
 
-    .name-input {
-      width: 100%;
-      border: 3px solid #a8ddd0;
-      background: white;
-      border-radius: 18px;
-      padding: 14px 18px;
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--text);
-      text-align: center;
-      margin-top: 16px;
-      font-family: inherit;
-    }
-    .name-input:focus { outline: none; border-color: var(--accent); }
-
-    .greeting {
-      margin: 8px 0 0;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--accent);
-    }
-
     @media (max-width: 600px) {
       body { padding: 10px; }
       .hero { padding: 16px 12px 10px; }
@@ -298,7 +276,6 @@
       .choice-btn { font-size: 1.15rem; padding: 14px 4px; }
       .pill { padding: 6px 10px; font-size: 0.82rem; }
       .question { margin: 4px 0 8px; }
-      .name-input { font-size: 1.1rem; padding: 12px 14px; }
       .hero-top { gap: 8px; }
       .nav-link { font-size: 0.78rem; padding: 5px 10px; }
       /* switch to 5-column table early enough */
@@ -331,23 +308,13 @@
       <h1>Öğrenme Modu</h1>
       <a class="nav-link" href="index.html">Test Modu →</a>
     </div>
-    <p class="subtitle">Bir sayı seç — soruları doğru bil ve renklerini yeşile çevir.</p>
-    <p class="greeting hidden" id="greeting"></p>
+    <p class="subtitle">Bir sayı seç — soruları doğru bil.</p>
   </section>
 
   <section class="content">
 
-    <!-- Welcome -->
-    <section class="panel" id="welcome-panel">
-      <h2>Merhaba! Adın ne?</h2>
-      <input class="name-input" id="name-input" type="text" maxlength="30" placeholder="Adını yaz...">
-      <div class="answer-row">
-        <button class="primary-btn" id="name-btn" type="button" disabled>Başlayalım</button>
-      </div>
-    </section>
-
     <!-- Setup -->
-    <section class="panel hidden" id="setup-panel">
+    <section class="panel" id="setup-panel">
       <h2 style="margin:0 0 4px;">Hangi sayıyı çalışmak istiyorsun?</h2>
       <div class="number-grid" id="number-grid"></div>
 
@@ -402,10 +369,6 @@
   const setupPanel    = document.getElementById("setup-panel");
   const quizPanel     = document.getElementById("quiz-panel");
   const summaryPanel  = document.getElementById("summary-panel");
-  const welcomePanel  = document.getElementById("welcome-panel");
-  const nameInput     = document.getElementById("name-input");
-  const nameBtn       = document.getElementById("name-btn");
-  const greetingEl    = document.getElementById("greeting");
   const remainingPill = document.getElementById("remaining-pill");
   const masteredPill  = document.getElementById("mastered-pill");
   const questionText  = document.getElementById("question-text");
@@ -422,38 +385,6 @@
 
   // ── constants ─────────────────────────────────────────────────────────────
   const STORAGE_KEY = "multiply_states_v2";
-  const NAME_KEY    = "multiply_username";
-
-  function getName() { return localStorage.getItem(NAME_KEY) || ""; }
-  function saveName(n) { localStorage.setItem(NAME_KEY, n.trim()); }
-
-  function showGreeting() {
-    const name = getName();
-    if (!name) return;
-    greetingEl.textContent = `Hoş geldin, ${name}!`;
-    greetingEl.classList.remove("hidden");
-  }
-
-  function initName() {
-    if (getName()) {
-      welcomePanel.classList.add("hidden");
-      setupPanel.classList.remove("hidden");
-      showGreeting();
-    }
-  }
-
-  nameInput.addEventListener("input", () => {
-    nameBtn.disabled = nameInput.value.trim().length === 0;
-  });
-  nameInput.addEventListener("keydown", e => {
-    if (e.key === "Enter" && nameInput.value.trim()) nameBtn.click();
-  });
-  nameBtn.addEventListener("click", () => {
-    saveName(nameInput.value);
-    welcomePanel.classList.add("hidden");
-    setupPanel.classList.remove("hidden");
-    showGreeting();
-  });
 
   // state codes: n=neutral, lg=light-green, dg=dark-green, or=orange, rd=red
   const STATE_EMOJI = { n: "❓", lg: "🙂", dg: "⭐", or: "😕", rd: "😰" };
@@ -833,10 +764,7 @@
       getState(d, selectedNumber, i+1) === "dg").length;
 
     if (mastered === 10) {
-      const name = getName();
-      summaryText.textContent = name
-        ? `Tebrikler ${name}! ${selectedNumber} çarpım tablosunda tam ustasın!`
-        : `${selectedNumber} çarpım tablosunda tam ustasın!`;
+      summaryText.textContent = `${selectedNumber} çarpım tablosunda tam ustasın!`;
       playVictory();
       launchConfetti();
     } else {
@@ -872,7 +800,6 @@
   });
 
   buildNumberButtons();
-  initName();
 </script>
 </body>
 </html>

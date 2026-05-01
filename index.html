@@ -191,28 +191,7 @@
 
     .hidden { display: none; }
 
-    .name-input {
-      width: 100%;
-      border: 3px solid #ffd69b;
-      background: white;
-      border-radius: 18px;
-      padding: 14px 18px;
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--text);
-      text-align: center;
-      margin-top: 16px;
-    }
-    .name-input:focus { outline: none; border-color: var(--accent); }
-
-    .greeting {
-      margin: 8px 0 0;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--accent-strong);
-    }
-
-    .hero-top {
+.hero-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
@@ -228,7 +207,7 @@
       .choice-btn { font-size: 1.2rem; padding: 14px 6px; }
       .pill { padding: 6px 10px; font-size: 0.85rem; }
       .question { margin: 12px 0 8px; }
-      .name-input { font-size: 1.1rem; padding: 12px 14px; }
+
     }
 
     @media (max-width: 400px) {
@@ -247,21 +226,11 @@
         <a href="learn.html" style="font:inherit;font-size:0.9rem;font-weight:700;color:#1f9d68;background:rgba(255,255,255,0.7);border:2px solid rgba(31,157,104,0.3);border-radius:999px;padding:7px 14px;text-decoration:none;white-space:nowrap;">Öğrenme Modu →</a>
       </div>
       <p class="subtitle">Çalışmak istediğin sayıları seç — her sayı için 30 saniye verilir.</p>
-      <p class="greeting hidden" id="greeting"></p>
     </section>
 
     <section class="content">
-      <!-- Welcome -->
-      <section class="panel" id="welcome-panel">
-        <h2>Merhaba! Adın ne?</h2>
-        <input class="name-input" id="name-input" type="text" maxlength="30" placeholder="Adını yaz...">
-        <div class="answer-row">
-          <button class="primary-btn" id="name-btn" type="button" disabled>Başlayalım</button>
-        </div>
-      </section>
-
       <!-- Setup -->
-      <section class="panel hidden" id="setup-panel">
+      <section class="panel" id="setup-panel">
         <h2>Hangi sayıları çalışmak istiyorsun?</h2>
         <div class="choices" id="number-choices" aria-label="2'den 10'a kadar sayılar"></div>
         <div class="answer-row">
@@ -302,10 +271,6 @@
     const setupPanel     = document.getElementById("setup-panel");
     const quizPanel      = document.getElementById("quiz-panel");
     const summaryPanel   = document.getElementById("summary-panel");
-    const welcomePanel   = document.getElementById("welcome-panel");
-    const nameInput      = document.getElementById("name-input");
-    const nameBtn        = document.getElementById("name-btn");
-    const greetingEl     = document.getElementById("greeting");
     const timerPill      = document.getElementById("timer-pill");
     const answeredPill   = document.getElementById("answered-pill");
     const scorePill      = document.getElementById("score-pill");
@@ -314,39 +279,6 @@
     const feedback       = document.getElementById("feedback");
     const summaryText    = document.getElementById("summary-text");
     const summaryDetail  = document.getElementById("summary-detail");
-
-    const NAME_KEY = "multiply_username";
-    function getName() { return localStorage.getItem(NAME_KEY) || ""; }
-    function saveName(n) { localStorage.setItem(NAME_KEY, n.trim()); }
-
-    function showGreeting() {
-      const name = getName();
-      if (!name) return;
-      greetingEl.textContent = `Hoş geldin, ${name}!`;
-      greetingEl.classList.remove("hidden");
-    }
-
-    function initName() {
-      const name = getName();
-      if (name) {
-        welcomePanel.classList.add("hidden");
-        setupPanel.classList.remove("hidden");
-        showGreeting();
-      }
-    }
-
-    nameInput.addEventListener("input", () => {
-      nameBtn.disabled = nameInput.value.trim().length === 0;
-    });
-    nameInput.addEventListener("keydown", e => {
-      if (e.key === "Enter" && nameInput.value.trim()) nameBtn.click();
-    });
-    nameBtn.addEventListener("click", () => {
-      saveName(nameInput.value);
-      welcomePanel.classList.add("hidden");
-      setupPanel.classList.remove("hidden");
-      showGreeting();
-    });
 
     const TIME_PER_NUMBER = 30;
     const selectedNumbers = new Set();
@@ -619,11 +551,9 @@
 
       const ns    = normalizedScore();
       const wrong = answered - correct;
-      const name  = getName();
-      const nameTag = name ? ` ${name}` : "";
       summaryText.textContent = cleared
-        ? `Tebrikler${nameTag}! Toplam puan: ${ns} / 100`
-        : `Süre doldu${nameTag}! Toplam puan: ${ns} / 100`;
+        ? `Tebrikler! Toplam puan: ${ns} / 100`
+        : `Süre doldu! Toplam puan: ${ns} / 100`;
       summaryDetail.textContent =
         `${answered} soruyu cevapladın: ` +
         `${correct} doğru, ${wrong} yanlış.`;
@@ -641,7 +571,6 @@
     });
 
     buildChoiceButtons();
-    initName();
   </script>
 </body>
 </html>
