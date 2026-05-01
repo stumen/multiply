@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>İlerleme Haritam</title>
+  <style>
+    :root {
+      --bg-top: #67e8f9;
+      --bg-bottom: #c4b5fd;
+      --card: rgba(255,255,255,0.93);
+      --text: #1e1b4b;
+      --accent: #f97316;
+      --shadow: 0 22px 60px rgba(124,58,237,0.24);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Comic Sans MS", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.55), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,0.4), transparent 25%),
+        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+
+    .game {
+      width: min(100%, 780px);
+      max-width: 100%;
+      background: var(--card);
+      border: 4px solid rgba(255,255,255,0.7);
+      border-radius: 32px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    /* ── hero ── */
+    .hero {
+      padding: 24px 28px 16px;
+      background: linear-gradient(135deg, rgba(249,115,22,0.18), rgba(103,232,249,0.30));
+    }
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.4rem); line-height: 1; }
+    .subtitle { margin: 8px 0 0; font-size: 0.98rem; opacity: 0.8; }
+    .nav-links { display: flex; gap: 8px; flex-shrink: 0; }
+    .nav-link {
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(255,255,255,0.75);
+      border: 2px solid rgba(249,115,22,0.35);
+      border-radius: 999px;
+      padding: 6px 14px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 140ms;
+    }
+    .nav-link:hover { background: white; }
+
+    /* ── layout ── */
+    .content { padding: 20px 28px 28px; display: grid; gap: 16px; }
+
+    .panel {
+      background: rgba(255,255,255,0.78);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+    .panel h2 { margin: 0 0 12px; font-size: 1.05rem; }
+
+    /* ── progress bar ── */
+    .progress-label { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .progress-track {
+      background: #fed7aa;
+      border-radius: 999px;
+      height: 14px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f97316, #fb923c);
+      border-radius: 999px;
+      transition: width 500ms ease;
+      width: 0%;
+    }
+
+    /* ── fact grid ── */
+    .fact-grid {
+      display: grid;
+      grid-template-columns: 36px repeat(10, 1fr);
+      gap: 5px;
+    }
+    .grid-corner, .grid-header {
+      text-align: center;
+      font-weight: 800;
+      font-size: 0.82rem;
+      padding: 5px 2px;
+      color: #888;
+    }
+    .grid-row-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .grid-cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: clamp(0.8rem, 2.2vw, 1.2rem);
+      cursor: default;
+      transition: transform 120ms;
+      background: #f0f0f0;
+    }
+    .grid-cell:hover { transform: scale(1.18); }
+
+    /* ── legend ── */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .legend-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    /* ── reset ── */
+    .ghost-btn {
+      border: 2px solid #ccc;
+      border-radius: 16px;
+      padding: 11px 20px;
+      background: transparent;
+      color: #888;
+      font-weight: 700;
+      font: inherit;
+      cursor: pointer;
+      transition: border-color 130ms, color 130ms;
+    }
+    .ghost-btn:hover { border-color: #e53935; color: #e53935; }
+    .center { display: flex; justify-content: center; }
+
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      .hero { padding: 16px 12px 10px; }
+      .content { padding: 10px 10px 16px; }
+      .panel { padding: 12px; }
+      .fact-grid { gap: 3px; }
+      .grid-corner, .grid-header { font-size: 0.7rem; padding: 4px 1px; }
+      .grid-row-label { font-size: 0.75rem; }
+      .fact-grid { grid-template-columns: 28px repeat(10, 1fr); }
+      .nav-link { font-size: 0.78rem; padding: 5px 10px; }
+      .hero-top { gap: 8px; }
+    }
+
+    @media (max-width: 400px) {
+      body { padding: 8px; }
+      .hero { padding: 14px 10px 10px; }
+      .content { padding: 8px 8px 14px; }
+      .panel { padding: 10px; }
+      h1 { font-size: 1.4rem; }
+      .hero-top { flex-wrap: wrap; }
+      .nav-links { gap: 5px; }
+      .nav-link { white-space: normal; font-size: 0.72rem; padding: 4px 8px; }
+      .fact-grid { gap: 2px; grid-template-columns: 24px repeat(10, 1fr); }
+      .grid-corner, .grid-header { font-size: 0.62rem; }
+      .grid-row-label { font-size: 0.65rem; }
+      .legend-item { font-size: 0.72rem; }
+    }
+  </style>
+</head>
+<body>
+<main class="game">
+  <section class="hero">
+    <div class="hero-top">
+      <h1>📊 İlerleme Haritam</h1>
+      <div class="nav-links">
+        <a class="nav-link" href="index.html">Test →</a>
+        <a class="nav-link" href="learn.html">Öğren →</a>
+      </div>
+    </div>
+    <p class="subtitle">Tüm çarpım bilgilerinin haritası — hangileri senin?</p>
+  </section>
+
+  <section class="content">
+
+    <!-- Overall progress -->
+    <section class="panel">
+      <div class="progress-label" id="progress-label">0 / 90 soruda ustasın (%0)</div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </section>
+
+    <!-- Grid -->
+    <section class="panel">
+      <div class="fact-grid" id="fact-grid"></div>
+      <div class="legend" id="legend"></div>
+    </section>
+
+    <!-- Reset -->
+    <section class="panel center">
+      <button class="ghost-btn" id="reset-btn" type="button">İlerlemeyi Sıfırla</button>
+    </section>
+
+  </section>
+</main>
+
+<script>
+  const STORAGE_KEY = "multiply_states_v2";
+  const STATE_EMOJI = { n: "❔", lg: "🙂", dg: "⭐", or: "😕", rd: "😰" };
+  const STATE_BG    = { n: "#f0f0f0", lg: "#d4f5e5", dg: "#86efac", or: "#fed7aa", rd: "#fca5a5" };
+  const STATE_LABEL = { n: "Denenmedi", lg: "1 kez doğru", dg: "Ustalaştın!", or: "Zorlandın", rd: "Tekrar lazım" };
+
+  const progressLabel = document.getElementById("progress-label");
+  const progressFill  = document.getElementById("progress-fill");
+  const factGrid      = document.getElementById("fact-grid");
+  const legendEl      = document.getElementById("legend");
+  const resetBtn      = document.getElementById("reset-btn");
+
+  function loadData() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch { return {}; }
+  }
+
+  function buildGrid() {
+    factGrid.innerHTML = "";
+
+    // header row
+    const corner = document.createElement("div");
+    corner.className = "grid-corner";
+    corner.textContent = "×";
+    factGrid.appendChild(corner);
+
+    for (let m = 1; m <= 10; m++) {
+      const h = document.createElement("div");
+      h.className = "grid-header";
+      h.textContent = m;
+      factGrid.appendChild(h);
+    }
+
+    // data rows
+    for (let n = 2; n <= 10; n++) {
+      const label = document.createElement("div");
+      label.className = "grid-row-label";
+      label.textContent = n;
+      factGrid.appendChild(label);
+
+      for (let m = 1; m <= 10; m++) {
+        const cell = document.createElement("div");
+        cell.className = "grid-cell";
+        cell.dataset.n = n;
+        cell.dataset.m = m;
+        cell.title = `${n} × ${m} = ${n * m}`;
+        factGrid.appendChild(cell);
+      }
+    }
+  }
+
+  function buildLegend() {
+    legendEl.innerHTML = "";
+    Object.entries(STATE_LABEL).forEach(([st, label]) => {
+      const item = document.createElement("div");
+      item.className = "legend-item";
+      const dot = document.createElement("div");
+      dot.className = "legend-dot";
+      dot.style.background = STATE_BG[st];
+      dot.textContent = STATE_EMOJI[st];
+      item.appendChild(dot);
+      item.appendChild(document.createTextNode(label));
+      legendEl.appendChild(item);
+    });
+  }
+
+  function renderDashboard() {
+    const d = loadData();
+    let mastered = 0;
+
+    for (let n = 2; n <= 10; n++) {
+      for (let m = 1; m <= 10; m++) {
+        const st   = d[`${n}_${m}`] || "n";
+        const cell = factGrid.querySelector(`[data-n="${n}"][data-m="${m}"]`);
+        cell.textContent      = STATE_EMOJI[st];
+        cell.style.background = STATE_BG[st];
+        if (st === "dg") mastered++;
+      }
+    }
+
+    const pct = Math.round(mastered / 90 * 100);
+    progressFill.style.width    = `${pct}%`;
+    progressLabel.textContent   = `${mastered} / 90 soruda ustasın (%${pct})`;
+  }
+
+  resetBtn.addEventListener("click", () => {
+    if (!confirm("Tüm ilerleme silinecek. Emin misin?")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    renderDashboard();
+  });
+
+  buildGrid();
+  buildLegend();
+  renderDashboard();
+</script>
+</body>
+</html>
