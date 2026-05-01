@@ -63,7 +63,7 @@
 
     .choices {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(66px, 1fr));
+      grid-template-columns: repeat(9, 1fr);
       gap: 12px;
       margin-top: 16px;
     }
@@ -212,18 +212,37 @@
       color: var(--accent-strong);
     }
 
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
     @media (max-width: 640px) {
-      .hero, .content { padding-left: 18px; padding-right: 18px; }
-      .panel { padding: 18px; }
-      .mc-grid { gap: 10px; }
-      .choice-btn { font-size: 1.3rem; padding: 18px 8px; }
+      body { padding: 12px; }
+      .hero, .content { padding-left: 14px; padding-right: 14px; }
+      .hero { padding-top: 18px; padding-bottom: 12px; }
+      .panel { padding: 14px; }
+      .mc-grid { gap: 8px; }
+      .choice-btn { font-size: 1.2rem; padding: 14px 6px; }
+      .pill { padding: 6px 10px; font-size: 0.85rem; }
+      .question { margin: 12px 0 8px; }
+      .name-input { font-size: 1.1rem; padding: 12px 14px; }
+    }
+
+    @media (max-width: 400px) {
+      .hero-top { flex-wrap: wrap; gap: 8px; }
+      h1 { font-size: 1.8rem; }
+      .choice-btn { font-size: 1rem; padding: 12px 4px; }
+      .number-btn { font-size: 1.1rem; padding: 11px 10px; }
     }
   </style>
 </head>
 <body>
   <main class="game">
     <section class="hero">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+      <div class="hero-top">
         <h1>Çarpma Oyunu</h1>
         <a href="learn.html" style="font:inherit;font-size:0.9rem;font-weight:700;color:#1f9d68;background:rgba(255,255,255,0.7);border:2px solid rgba(31,157,104,0.3);border-radius:999px;padding:7px 14px;text-decoration:none;white-space:nowrap;">Öğrenme Modu →</a>
       </div>

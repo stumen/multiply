@@ -286,10 +286,27 @@
     }
 
     @media (max-width: 600px) {
-      .content { padding: 16px 18px 24px; }
-      .panel { padding: 16px; }
+      body { padding: 12px; }
+      .hero { padding: 18px 14px 12px; }
+      .content { padding: 14px 14px 20px; }
+      .panel { padding: 14px; }
       .mc-grid { gap: 8px; }
-      .choice-btn { font-size: 1.25rem; padding: 16px 6px; }
+      .choice-btn { font-size: 1.2rem; padding: 14px 6px; }
+      .pill { padding: 6px 10px; font-size: 0.85rem; }
+      .question { margin: 4px 0 8px; }
+      .name-input { font-size: 1.1rem; padding: 12px 14px; }
+      .hero-top { gap: 8px; }
+      .nav-link { font-size: 0.8rem; padding: 5px 11px; }
+    }
+
+    @media (max-width: 480px) {
+      .mult-table { grid-template-columns: repeat(5, 1fr); gap: 6px; }
+      .trow { padding: 8px 4px; font-size: 0.9rem; }
+      .trow-emoji { font-size: 1rem; }
+      .number-btn { padding: 10px 6px; font-size: 1.1rem; }
+      h1 { font-size: 1.8rem; }
+      .choice-btn { font-size: 1rem; padding: 12px 4px; }
+      .hero-top { flex-wrap: wrap; }
     }
   </style>
 </head>
