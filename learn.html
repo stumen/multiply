@@ -273,28 +273,41 @@
       margin-top: 14px;
     }
     .emoji-preset-btn {
+      position: relative;
       border: 2px solid transparent;
-      border-radius: 999px;
-      padding: 8px 14px;
+      border-radius: 16px;
+      padding: 12px 10px 9px;
+      min-width: 76px;
       background: #fff7ed;
       cursor: pointer;
-      font-size: 1rem;
       font-weight: 700;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 5px;
+      gap: 0;
       transition: transform 130ms, border-color 130ms;
       box-shadow: 0 4px 10px rgba(249,115,22,0.12);
     }
     .emoji-preset-btn:not(:disabled):hover { transform: translateY(-2px); border-color: var(--accent); }
     .emoji-preset-btn:disabled { opacity: 0.35; cursor: not-allowed; }
     .emoji-preset-btn.active { background: var(--accent); color: white; }
+    .preset-emoji { font-size: 2rem; line-height: 1.2; display: block; }
+    .preset-label {
+      font-size: 0.62rem;
+      margin-top: 5px;
+      text-align: center;
+      line-height: 1.3;
+      display: block;
+    }
     .preset-count {
-      font-size: 0.72rem;
-      background: rgba(0,0,0,0.09);
+      position: absolute;
+      top: 5px; right: 7px;
+      font-size: 0.62rem;
+      font-weight: 800;
+      background: rgba(0,0,0,0.12);
       border-radius: 999px;
-      padding: 1px 6px;
-      line-height: 1.4;
+      padding: 1px 5px;
+      line-height: 1.5;
     }
 
     .hidden { display: none; }
@@ -406,7 +419,8 @@
   const STORAGE_KEY = "multiply_states_v2";
 
   // state codes: n=neutral, lg=light-green, dg=dark-green, or=orange, rd=red
-  const STATE_EMOJI = { n: "❔", lg: "🙂", dg: "⭐", or: "😕", rd: "😰" };
+  const STATE_EMOJI  = { n: "❔", lg: "🙂", dg: "⭐", or: "😕", rd: "😰" };
+  const STATE_LABEL  = { n: "Denenmedi", lg: "Az bildim", dg: "Ustalaştım!", or: "Zorlandım", rd: "Unutuyorum" };
 
   // ── state ─────────────────────────────────────────────────────────────────
   let selectedNumbers = new Set();
@@ -553,7 +567,7 @@
       btn.className = "emoji-preset-btn";
       btn.disabled = count === 0;
       if (filterState === state) btn.classList.add("active");
-      btn.innerHTML = `${STATE_EMOJI[state]} <span class="preset-count">${count}</span>`;
+      btn.innerHTML = `<span class="preset-count">${count}</span><span class="preset-emoji">${STATE_EMOJI[state]}</span><span class="preset-label">${STATE_LABEL[state]}</span>`;
       btn.addEventListener("click", () => {
         filterState = state;
         selectedNumbers = new Set();
