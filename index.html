@@ -189,6 +189,38 @@
       margin-top: 18px;
     }
 
+    /* ── emoji preset buttons ── */
+    .emoji-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .emoji-preset-btn {
+      border: 2px solid transparent;
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: #f5f3ff;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: transform 130ms, border-color 130ms;
+      box-shadow: 0 4px 10px rgba(139,92,246,0.12);
+    }
+    .emoji-preset-btn:not(:disabled):hover { transform: translateY(-2px); border-color: var(--accent); }
+    .emoji-preset-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .emoji-preset-btn.active { background: var(--accent); color: white; }
+    .preset-count {
+      font-size: 0.72rem;
+      background: rgba(0,0,0,0.09);
+      border-radius: 999px;
+      padding: 1px 6px;
+      line-height: 1.4;
+    }
+
     .hidden { display: none; }
 
 .hero-top {
@@ -228,7 +260,7 @@
           <a href="dashboard.html" style="font:inherit;font-size:0.9rem;font-weight:700;color:#7c3aed;background:rgba(255,255,255,0.78);border:2px solid rgba(139,92,246,0.35);border-radius:999px;padding:7px 14px;text-decoration:none;white-space:nowrap;">📊 Harita</a>
         </div>
       </div>
-      <p class="subtitle">Çalışmak istediğin sayıları seç — her sayı için 30 saniye verilir.</p>
+      <p class="subtitle">Çalışmak istediğin sayıları seç.</p>
     </section>
 
     <section class="content">
@@ -236,6 +268,7 @@
       <section class="panel" id="setup-panel">
         <h2>Hangi sayıları çalışmak istiyorsun?</h2>
         <div class="choices" id="number-choices" aria-label="2'den 10'a kadar sayılar"></div>
+        <div class="emoji-presets" id="emoji-presets"></div>
         <div class="answer-row">
           <button class="primary-btn" id="start-btn" type="button" disabled>Oyunu Başlat</button>
         </div>
@@ -284,6 +317,7 @@
     const summaryDetail  = document.getElementById("summary-detail");
 
     const STORAGE_KEY = "multiply_states_v2";
+    const STATE_EMOJI = { n: "❔", lg: "🙂", dg: "⭐", or: "😕", rd: "😰" };
     function loadData() {
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
       catch { return {}; }
@@ -304,6 +338,7 @@
 
     const TIME_PER_NUMBER = 30;
     const selectedNumbers = new Set();
+    let filterState = null;
     let score = 0;
     let answered = 0;
     let correct = 0;
@@ -329,13 +364,41 @@
         btn.textContent = n;
         btn.dataset.number = n;
         btn.addEventListener("click", () => {
+          filterState = null;
           if (selectedNumbers.has(n)) selectedNumbers.delete(n);
           else selectedNumbers.add(n);
           btn.classList.toggle("active", selectedNumbers.has(n));
           startButton.disabled = selectedNumbers.size === 0;
+          buildEmojiPresets();
         });
         numberChoices.appendChild(btn);
       }
+    }
+
+    function buildEmojiPresets() {
+      const container = document.getElementById("emoji-presets");
+      const d = loadData();
+      container.innerHTML = "";
+      ["n","lg","dg","or","rd"].forEach(state => {
+        let count = 0;
+        for (let n = 2; n <= 10; n++)
+          for (let m = 1; m <= 10; m++)
+            if (getState(d, n, m) === state) count++;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "emoji-preset-btn";
+        btn.disabled = count === 0;
+        if (filterState === state) btn.classList.add("active");
+        btn.innerHTML = `${STATE_EMOJI[state]} <span class="preset-count">${count}</span>`;
+        btn.addEventListener("click", () => {
+          filterState = state;
+          selectedNumbers.clear();
+          numberChoices.querySelectorAll(".number-btn").forEach(b => b.classList.remove("active"));
+          startButton.disabled = false;
+          buildEmojiPresets();
+        });
+        container.appendChild(btn);
+      });
     }
 
     // ── question helpers ─────────────────────────────────────────────────────
@@ -351,10 +414,16 @@
 
     function buildPool() {
       const pool = [];
-      for (const n of selectedNumbers) {
-        for (let m = 1; m <= 10; m++) {
-          pool.push({ factorA: n, factorB: m, answer: n * m });
-        }
+      if (filterState !== null) {
+        const d = loadData();
+        for (let n = 2; n <= 10; n++)
+          for (let m = 1; m <= 10; m++)
+            if (getState(d, n, m) === filterState)
+              pool.push({ factorA: n, factorB: m, answer: n * m });
+      } else {
+        for (const n of selectedNumbers)
+          for (let m = 1; m <= 10; m++)
+            pool.push({ factorA: n, factorB: m, answer: n * m });
       }
       return shuffle(pool);
     }
@@ -533,7 +602,9 @@
     // ── timer ────────────────────────────────────────────────────────────────
 
     function startTimer() {
-      timeLeft = selectedNumbers.size * TIME_PER_NUMBER;
+      timeLeft = filterState !== null
+        ? Math.max(1, Math.ceil(questionPool.length / 10)) * TIME_PER_NUMBER
+        : selectedNumbers.size * TIME_PER_NUMBER;
       updateTimerDisplay();
       timerInterval = setInterval(() => {
         timeLeft--;
@@ -598,6 +669,7 @@
     });
 
     buildChoiceButtons();
+    buildEmojiPresets();
   </script>
 </body>
 </html>

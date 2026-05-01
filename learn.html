@@ -265,6 +265,38 @@
     .summary p { margin: 8px 0; }
 
 
+    /* ── emoji preset buttons ── */
+    .emoji-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .emoji-preset-btn {
+      border: 2px solid transparent;
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: #fff7ed;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: transform 130ms, border-color 130ms;
+      box-shadow: 0 4px 10px rgba(249,115,22,0.12);
+    }
+    .emoji-preset-btn:not(:disabled):hover { transform: translateY(-2px); border-color: var(--accent); }
+    .emoji-preset-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .emoji-preset-btn.active { background: var(--accent); color: white; }
+    .preset-count {
+      font-size: 0.72rem;
+      background: rgba(0,0,0,0.09);
+      border-radius: 999px;
+      padding: 1px 6px;
+      line-height: 1.4;
+    }
+
     .hidden { display: none; }
 
     @media (max-width: 600px) {
@@ -311,7 +343,7 @@
         <a class="nav-link" href="dashboard.html">📊 Harita</a>
       </div>
     </div>
-    <p class="subtitle">Bir sayı seç — soruları doğru bil.</p>
+    <p class="subtitle">Bir sayı seç.</p>
   </section>
 
   <section class="content">
@@ -320,6 +352,7 @@
     <section class="panel" id="setup-panel">
       <h2 style="margin:0 0 4px;">Hangi sayıyı çalışmak istiyorsun?</h2>
       <div class="number-grid" id="number-grid"></div>
+      <div class="emoji-presets" id="emoji-presets"></div>
 
       <div class="answer-row">
         <button class="primary-btn" id="start-btn" type="button" disabled>Başlat</button>
@@ -376,7 +409,8 @@
   const STATE_EMOJI = { n: "❔", lg: "🙂", dg: "⭐", or: "😕", rd: "😰" };
 
   // ── state ─────────────────────────────────────────────────────────────────
-  let selectedNumber  = null;
+  let selectedNumbers = new Set();
+  let filterState = null;
   let questionQueue   = [];
   let currentQuestion = null;
   let locked          = false;
@@ -440,13 +474,15 @@
   }
 
   function updateTableRow(m) {
+    if (filterState !== null || selectedNumbers.size !== 1) return;
     const d   = loadData();
     const row = quizTable.querySelector(`[data-m="${m}"]`);
     if (!row) return;
-    row.querySelector(".trow-emoji").textContent = STATE_EMOJI[getState(d, selectedNumber, m)];
+    row.querySelector(".trow-emoji").textContent = STATE_EMOJI[getState(d, [...selectedNumbers][0], m)];
   }
 
   function highlightCurrentRow() {
+    if (filterState !== null || selectedNumbers.size !== 1) return;
     quizTable.querySelectorAll(".trow").forEach(r => r.classList.remove("current"));
     if (currentQuestion) {
       const row = quizTable.querySelector(`[data-m="${currentQuestion.factorB}"]`);
@@ -468,28 +504,65 @@
   }
 
   function selectNumber(n) {
-    selectedNumber = n;
+    filterState = null;
+    selectedNumbers = new Set([n]);
     numberGrid.querySelectorAll(".number-btn").forEach(b => {
       b.classList.toggle("active", Number(b.dataset.n) === n);
     });
     startBtn.disabled = false;
+    buildEmojiPresets();
   }
 
   // ── queue building ────────────────────────────────────────────────────────
-  function buildQueue(n) {
+  function buildQueue(numbers) {
     const d = loadData();
-    const groups = { rd: [], or: [], n: [], lg: [] };
-    for (let m = 1; m <= 10; m++) {
-      const st = getState(d, n, m);
-      if (st !== "dg" && groups[st]) groups[st].push({ factorA: n, factorB: m, answer: n * m });
+    if (filterState !== null) {
+      const facts = [];
+      for (let n = 2; n <= 10; n++)
+        for (let m = 1; m <= 10; m++)
+          if (getState(d, n, m) === filterState)
+            facts.push({ factorA: n, factorB: m, answer: n * m });
+      return shuffle(facts);
     }
-    // priority: red → orange → neutral → light-green
+    const groups = { rd: [], or: [], n: [], lg: [] };
+    for (const n of numbers) {
+      for (let m = 1; m <= 10; m++) {
+        const st = getState(d, n, m);
+        if (st !== "dg" && groups[st]) groups[st].push({ factorA: n, factorB: m, answer: n * m });
+      }
+    }
     return [
       ...shuffle(groups.rd),
       ...shuffle(groups.or),
       ...shuffle(groups.n),
       ...shuffle(groups.lg),
     ];
+  }
+
+  function buildEmojiPresets() {
+    const container = document.getElementById("emoji-presets");
+    const d = loadData();
+    container.innerHTML = "";
+    ["n","lg","dg","or","rd"].forEach(state => {
+      let count = 0;
+      for (let n = 2; n <= 10; n++)
+        for (let m = 1; m <= 10; m++)
+          if (getState(d, n, m) === state) count++;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "emoji-preset-btn";
+      btn.disabled = count === 0;
+      if (filterState === state) btn.classList.add("active");
+      btn.innerHTML = `${STATE_EMOJI[state]} <span class="preset-count">${count}</span>`;
+      btn.addEventListener("click", () => {
+        filterState = state;
+        selectedNumbers = new Set();
+        numberGrid.querySelectorAll(".number-btn").forEach(b => b.classList.remove("active"));
+        startBtn.disabled = false;
+        buildEmojiPresets();
+      });
+      container.appendChild(btn);
+    });
   }
 
   // ── pills ─────────────────────────────────────────────────────────────────
@@ -682,7 +755,7 @@
 
   // ── game flow ─────────────────────────────────────────────────────────────
   function startGame() {
-    questionQueue   = buildQueue(selectedNumber);
+    questionQueue   = buildQueue(selectedNumbers);
     sessionAttempts = 0;
     locked          = false;
 
@@ -690,7 +763,13 @@
     summaryPanel.classList.add("hidden");
     quizPanel.classList.remove("hidden");
 
-    renderTable(selectedNumber, null);
+    if (filterState === null && selectedNumbers.size === 1) {
+      quizTable.classList.remove("hidden");
+      renderTable([...selectedNumbers][0], null);
+    } else {
+      quizTable.classList.add("hidden");
+    }
+
     updatePills();
     nextQuestion();
   }
@@ -699,18 +778,26 @@
     quizPanel.classList.add("hidden");
     summaryPanel.classList.remove("hidden");
 
-    const d        = loadData();
-    const mastered = [...Array(10)].filter((_,i) =>
-      getState(d, selectedNumber, i+1) === "dg").length;
+    const d = loadData();
+    const allMastered = filterState !== null
+      ? true
+      : [...selectedNumbers].every(n =>
+          [...Array(10)].every((_,i) => getState(d, n, i+1) === "dg")
+        );
 
-    if (mastered === 10) {
-      summaryText.textContent = `Tebrikler! ${selectedNumber} tablosunu bitirdin!`;
+    if (allMastered) {
+      const label = filterState !== null
+        ? `bu grubu`
+        : selectedNumbers.size === 1
+          ? `${[...selectedNumbers][0]} tablosunu`
+          : `bu grubu`;
+      summaryText.textContent = `Tebrikler! ${label} bitirdin!`;
       playVictory();
       launchConfetti();
     } else {
       summaryText.textContent = `Bu turu tamamladın!`;
     }
-    summaryDetail.textContent = `${sessionAttempts} denemede ${selectedNumber} çarpım tablosunu çalıştın.`;
+    summaryDetail.textContent = `${sessionAttempts} denemede çalıştın.`;
   }
 
   // ── wiring ────────────────────────────────────────────────────────────────
@@ -722,6 +809,7 @@
   });
 
   buildNumberButtons();
+  buildEmojiPresets();
 </script>
 </body>
 </html>
