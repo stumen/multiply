@@ -202,7 +202,10 @@
 <body>
   <main class="game">
     <section class="hero">
-      <h1>Çarpma Oyunu</h1>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+        <h1>Çarpma Oyunu</h1>
+        <a href="learn.html" style="font:inherit;font-size:0.9rem;font-weight:700;color:#1f9d68;background:rgba(255,255,255,0.7);border:2px solid rgba(31,157,104,0.3);border-radius:999px;padding:7px 14px;text-decoration:none;white-space:nowrap;">Öğrenme Modu →</a>
+      </div>
       <p class="subtitle">Çalışmak istediğin sayıları seç — her sayı için 20 saniye verilir. Doğru: +1, Yanlış: −1.</p>
     </section>
 
@@ -258,7 +261,7 @@
     const summaryText    = document.getElementById("summary-text");
     const summaryDetail  = document.getElementById("summary-detail");
 
-    const TIME_PER_NUMBER = 20;
+    const TIME_PER_NUMBER = 30;
     const selectedNumbers = new Set();
     let score = 0;
     let answered = 0;
