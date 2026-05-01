@@ -227,7 +227,7 @@
         <h1>Çarpma Oyunu</h1>
         <a href="learn.html" style="font:inherit;font-size:0.9rem;font-weight:700;color:#1f9d68;background:rgba(255,255,255,0.7);border:2px solid rgba(31,157,104,0.3);border-radius:999px;padding:7px 14px;text-decoration:none;white-space:nowrap;">Öğrenme Modu →</a>
       </div>
-      <p class="subtitle">Çalışmak istediğin sayıları seç — her sayı için 30 saniye verilir. Doğru: +1, Yanlış: −1.</p>
+      <p class="subtitle">Çalışmak istediğin sayıları seç — her sayı için 30 saniye verilir.</p>
       <p class="greeting hidden" id="greeting"></p>
     </section>
 
@@ -532,7 +532,7 @@
         questionPool = questionPool.filter(q => q !== currentQuestion);
         playFeedback(true);
         btn.classList.add("correct");
-        feedback.textContent = "Doğru! +1";
+        feedback.textContent = "Doğru!";
         feedback.className = "feedback success";
       } else {
         score--;
