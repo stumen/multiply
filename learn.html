@@ -555,6 +555,7 @@
 
   // ── setup buttons ─────────────────────────────────────────────────────────
   function buildNumberButtons() {
+    numberGrid.innerHTML = "";
     const d = loadData();
     for (let n = 2; n <= 10; n++) {
       const btn = document.createElement("button");
@@ -914,6 +915,10 @@
   playAgainBtn.addEventListener("click", () => {
     summaryPanel.classList.add("hidden");
     setupPanel.classList.remove("hidden");
+    selectedNumbers.clear();
+    startBtn.disabled = true;
+    buildNumberButtons();
+    buildEmojiPresets();
   });
 
   buildNumberButtons();

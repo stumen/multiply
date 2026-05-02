@@ -428,6 +428,7 @@
     // ── setup buttons ────────────────────────────────────────────────────────
 
     function buildChoiceButtons() {
+      numberChoices.innerHTML = "";
       const d = loadData();
       for (let n = 2; n <= 10; n++) {
         const btn = document.createElement("button");
@@ -788,6 +789,10 @@
     playAgainButton.addEventListener("click", () => {
       summaryPanel.classList.add("hidden");
       setupPanel.classList.remove("hidden");
+      selectedNumbers.clear();
+      startButton.disabled = true;
+      buildChoiceButtons();
+      buildEmojiPresets();
     });
 
     buildChoiceButtons();
