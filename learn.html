@@ -592,12 +592,12 @@
   // ── queue building ────────────────────────────────────────────────────────
   function buildQueue(numbers) {
     const d = loadData();
-    const groups = { rd: [], or: [], n: [], lg: [] };
+    const groups = { rd: [], or: [], n: [], lg: [], dg: [] };
     for (let n = 2; n <= 10; n++) {
       if (numbers.size > 0 && !numbers.has(n)) continue;
       for (let m = 1; m <= 10; m++) {
         const st = getState(d, n, m);
-        if (st === "dg") continue;
+        if (st === "dg" && !filterStates.has("dg")) continue;
         if (filterStates.size > 0 && !filterStates.has(st)) continue;
         if (groups[st]) groups[st].push({ factorA: n, factorB: m, answer: n * m });
       }
@@ -607,6 +607,7 @@
       ...shuffle(groups.or),
       ...shuffle(groups.n),
       ...shuffle(groups.lg),
+      ...shuffle(groups.dg),
     ];
   }
 

@@ -141,11 +141,35 @@
       padding: 28px;
       cursor: pointer;
       user-select: none;
-      margin: 4px 0 18px;
+      margin: 4px 0 10px;
       background: linear-gradient(135deg, #e0f2fe, #bae6fd);
       border: 3px solid #7dd3fc;
       transition: opacity 0.18s ease, transform 0.18s ease;
     }
+
+    @keyframes judgeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .judge-row {
+      display: flex; gap: 10px; margin-bottom: 4px;
+      animation: judgeIn 0.22s ease;
+    }
+    .judge-row.hidden { display: none; }
+    .judge-btn {
+      flex: 1; border: 0; border-radius: 16px;
+      padding: 16px 12px; font: inherit; font-size: 1rem; font-weight: 800;
+      cursor: pointer; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 5px;
+      text-align: center; line-height: 1.3;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      transition: transform 130ms, box-shadow 130ms;
+    }
+    .judge-btn .btn-emoji { font-size: 1.5rem; line-height: 1; }
+    .judge-btn.knew  { background: #dcfce7; color: #15803d; }
+    .judge-btn.knew:hover  { background: #bbf7d0; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(21,128,61,0.22); }
+    .judge-btn.didnt { background: #fee2e2; color: #dc2626; }
+    .judge-btn.didnt:hover { background: #fecaca; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(220,38,38,0.22); }
     .card.answer {
       background: linear-gradient(135deg, #dcfce7, #bbf7d0);
       border-color: #86efac;
@@ -215,6 +239,14 @@
       <div class="card" id="card">
         <div id="card-content"></div>
       </div>
+      <div class="judge-row hidden" id="judge-row">
+        <button class="judge-btn didnt" id="didnt-btn" type="button">
+          <span class="btn-emoji">❌</span>Bilmiyordum
+        </button>
+        <button class="judge-btn knew" id="knew-btn" type="button">
+          <span class="btn-emoji">✅</span>Biliyordum
+        </button>
+      </div>
     </section>
 
     <!-- Summary -->
@@ -241,12 +273,15 @@
   const progressPill  = document.getElementById("progress-pill");
   const card          = document.getElementById("card");
   const cardContent   = document.getElementById("card-content");
+  const judgeRow      = document.getElementById("judge-row");
+  const knewBtn       = document.getElementById("knew-btn");
+  const didntBtn      = document.getElementById("didnt-btn");
   const summaryText   = document.getElementById("summary-text");
   const summaryDetail = document.getElementById("summary-detail");
 
   // ── constants ─────────────────────────────────────────────────────────────
-  const MASTERY_KEY = "multiply_learn_states";   // read-only: category filter
-  const SEEN_KEY    = "multiply_flashcard_seen";  // write: tracks seen facts
+  const MASTERY_KEY = "multiply_learn_states";      // read-only: category filter
+  const FLASH_KEY   = "multiply_flashcard_states";  // write: flashcard scores
   const STATE_EMOJI = { n: "❔", lg: "🙂", dg: "⭐", or: "😕", rd: "😰" };
   const STATE_LABEL = { n: "Denenmedi", lg: "1 kez doğru", dg: "Ustalaştın!", or: "Zorlandın", rd: "Tekrar lazım" };
   const FADE_MS     = 180;
@@ -256,7 +291,8 @@
   let filterStates    = new Set();
   let deck            = [];
   let totalCards      = 0;
-  let seenInSession   = 0;
+  let knewCount       = 0;
+  let didntCount      = 0;
   let currentCard     = null;
   let cardState       = "question"; // "question" | "answer"
   let transitioning   = false;
@@ -266,24 +302,38 @@
     try { return JSON.parse(localStorage.getItem(MASTERY_KEY)) || {}; }
     catch { return {}; }
   }
-  function loadSeen() {
-    try { return JSON.parse(localStorage.getItem(SEEN_KEY)) || {}; }
+  function loadFlash() {
+    try { return JSON.parse(localStorage.getItem(FLASH_KEY)) || {}; }
     catch { return {}; }
   }
-  function saveSeen(d) { localStorage.setItem(SEEN_KEY, JSON.stringify(d)); }
+  function saveFlash(d) { localStorage.setItem(FLASH_KEY, JSON.stringify(d)); }
   function stateKey(n, m) { return `${n}_${m}`; }
   function getMastery(d, n, m) { return d[stateKey(n, m)] || "n"; }
+  function getFlash(d, n, m)   { return d[stateKey(n, m)] || "n"; }
 
-  function markSeen(n, m) {
-    const d = loadSeen();
-    d[stateKey(n, m)] = true;
-    saveSeen(d);
+  function nextState(current, knew) {
+    if (knew) {
+      if (current === "dg") return "dg";
+      if (current === "lg") return "dg";
+      return "lg";
+    } else {
+      if (current === "or" || current === "rd") return "rd";
+      return "or";
+    }
   }
 
-  function isNumberAllSeen(n) {
-    const seen = loadSeen();
+  function judgeCard(knew) {
+    const d = loadFlash();
+    const n = currentCard.factorA, m = currentCard.factorB;
+    d[stateKey(n, m)] = nextState(getFlash(d, n, m), knew);
+    saveFlash(d);
+    if (knew) knewCount++; else didntCount++;
+  }
+
+  function isNumberDone(n) {
+    const d = loadFlash();
     for (let m = 1; m <= 10; m++)
-      if (!seen[stateKey(n, m)]) return false;
+      if (getFlash(d, n, m) === "n") return false;
     return true;
   }
 
@@ -297,7 +347,7 @@
       btn.dataset.n = n;
       btn.appendChild(document.createTextNode(n));
 
-      if (isNumberAllSeen(n)) {
+      if (isNumberDone(n)) {
         const badge = document.createElement("span");
         badge.className = "mbadge";
         badge.textContent = "✓";
@@ -380,6 +430,7 @@
     cardContent.innerHTML =
       `<div class="card-question">${currentCard.factorA} × ${currentCard.factorB} = ?</div>` +
       `<div class="card-hint">dokunarak gör</div>`;
+    judgeRow.classList.add("hidden");
     cardState = "question";
   }
 
@@ -387,36 +438,40 @@
     card.classList.add("answer");
     cardContent.innerHTML =
       `<div class="card-answer-question">${currentCard.factorA} × ${currentCard.factorB}</div>` +
-      `<div class="card-answer">${currentCard.answer}</div>` +
-      `<div class="card-hint">sonraki için dokun</div>`;
+      `<div class="card-answer">${currentCard.answer}</div>`;
+    judgeRow.classList.remove("hidden");
     cardState = "answer";
-    markSeen(currentCard.factorA, currentCard.factorB);
-    seenInSession++;
   }
 
   function updatePills() {
     remainingPill.textContent = `Kaldı: ${deck.length}`;
-    progressPill.textContent  = `${seenInSession} / ${totalCards}`;
+    progressPill.textContent  = `${knewCount + didntCount} / ${totalCards}`;
   }
 
   card.addEventListener("click", () => {
-    if (transitioning) return;
-    if (cardState === "question") {
-      transitionTo(() => { renderAnswer(); updatePills(); });
-    } else {
-      deck.shift();
-      if (deck.length === 0) { endGame(); return; }
-      currentCard = deck[0];
-      transitionTo(() => { renderQuestion(); updatePills(); });
-    }
+    if (transitioning || cardState === "answer") return;
+    transitionTo(() => { renderAnswer(); updatePills(); });
   });
+
+  function advanceCard(knew) {
+    if (transitioning) return;
+    judgeCard(knew);
+    deck.shift();
+    if (deck.length === 0) { endGame(); return; }
+    currentCard = deck[0];
+    transitionTo(() => { renderQuestion(); updatePills(); });
+  }
+
+  knewBtn .addEventListener("click", () => advanceCard(true));
+  didntBtn.addEventListener("click", () => advanceCard(false));
 
   // ── game flow ─────────────────────────────────────────────────────────────
   function startGame() {
-    deck          = buildDeck();
-    totalCards    = deck.length;
-    seenInSession = 0;
-    currentCard   = deck[0];
+    deck       = buildDeck();
+    totalCards = deck.length;
+    knewCount  = 0;
+    didntCount = 0;
+    currentCard = deck[0];
 
     setupPanel.classList.add("hidden");
     summaryPanel.classList.add("hidden");
@@ -431,7 +486,7 @@
     quizPanel.classList.add("hidden");
     summaryPanel.classList.remove("hidden");
     summaryText.textContent   = "Tebrikler! Desteni tamamladın! 🃏";
-    summaryDetail.textContent = `${totalCards} kartı gözden geçirdin.`;
+    summaryDetail.textContent = `${totalCards} kart — ✅ ${knewCount} biliyordum, ❌ ${didntCount} bilmiyordum.`;
   }
 
   // ── wiring ────────────────────────────────────────────────────────────────

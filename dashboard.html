@@ -268,7 +268,7 @@
 <script>
   const LEARN_KEY   = "multiply_learn_states";
   const EXAM_KEY    = "multiply_exam_states";
-  const FLASH_KEY   = "multiply_flashcard_seen";
+  const FLASH_KEY   = "multiply_flashcard_states";
   const STATE_EMOJI = { n: "❔", lg: "🙂", dg: "⭐", or: "😕", rd: "😰" };
   const STATE_BG    = { n: "#f0f0f0", lg: "#d4f5e5", dg: "#86efac", or: "#fed7aa", rd: "#fca5a5" };
   const STATE_LABEL = { n: "Denenmedi", lg: "1 kez doğru", dg: "Ustalaştın!", or: "Zorlandın", rd: "Tekrar lazım" };
@@ -285,14 +285,7 @@
 
   function loadLearnData() { try { return JSON.parse(localStorage.getItem(LEARN_KEY)) || {}; } catch { return {}; } }
   function loadExamData()  { try { return JSON.parse(localStorage.getItem(EXAM_KEY))  || {}; } catch { return {}; } }
-  function loadFlashData() {
-    try {
-      const raw = JSON.parse(localStorage.getItem(FLASH_KEY)) || {};
-      const out = {};
-      for (const key in raw) out[key] = raw[key] === true ? "lg" : "n";
-      return out;
-    } catch { return {}; }
-  }
+  function loadFlashData() { try { return JSON.parse(localStorage.getItem(FLASH_KEY)) || {}; } catch { return {}; } }
 
   function buildGrid() {
     factGrid.innerHTML = "";
@@ -328,12 +321,9 @@
     }
   }
 
-  const FLASH_STATE_LABEL = { n: "Görülmedi", lg: "Görüldü" };
-
   function buildLegend() {
     legendEl.innerHTML = "";
-    const labels = activeMode === "flash" ? FLASH_STATE_LABEL : STATE_LABEL;
-    Object.entries(labels).forEach(([st, label]) => {
+    Object.entries(STATE_LABEL).forEach(([st, label]) => {
       const item = document.createElement("div");
       item.className = "legend-item";
       const dot = document.createElement("div");
@@ -365,25 +355,19 @@
         const cell = factGrid.querySelector(`[data-n="${n}"][data-m="${m}"]`);
         cell.textContent      = STATE_EMOJI[st];
         cell.style.background = STATE_BG[st];
-        const isFlash = activeMode === "flash";
-        if (isFlash ? st === "lg" : st === "dg") mastered++;
+        if (st === "dg") mastered++;
       }
     }
 
     const pct = Math.round(mastered / 90 * 100);
     progressFill.style.width  = `${pct}%`;
-    if (activeMode === "flash") {
-      progressLabel.textContent = `${mastered} / 90 kartı gördün (%${pct})`;
-    } else {
-      progressLabel.textContent = `${mastered} / 90 soruda ustasın (%${pct})`;
-    }
+    progressLabel.textContent = `${mastered} / 90 soruda ustasın (%${pct})`;
   }
 
   [tabLearn, tabExam, tabFlash].forEach(btn => btn.addEventListener("click", () => {
     [tabLearn, tabExam, tabFlash].forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     activeMode = btn === tabLearn ? "learn" : btn === tabExam ? "exam" : "flash";
-    buildLegend();
     renderDashboard();
   }));
 
