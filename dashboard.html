@@ -156,6 +156,28 @@
       font-size: 0.75rem;
     }
 
+    /* ── tabs ── */
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 8px 10px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      background: transparent;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #888;
+      cursor: pointer;
+      transition: border-color 130ms, color 130ms, background 130ms;
+    }
+    .tab-btn:hover  { border-color: #f97316; color: #f97316; }
+    .tab-btn.active { border-color: #f97316; color: #fff; background: #f97316; }
+
     /* ── reset ── */
     .ghost-btn {
       border: 2px solid #ccc;
@@ -225,6 +247,10 @@
 
     <!-- Grid -->
     <section class="panel">
+      <div class="tab-bar">
+        <button class="tab-btn active" id="tab-learn">📖 Öğrenme</button>
+        <button class="tab-btn"        id="tab-exam" >✏️ Test</button>
+      </div>
       <div class="fact-grid" id="fact-grid"></div>
       <div class="legend" id="legend"></div>
     </section>
@@ -238,21 +264,23 @@
 </main>
 
 <script>
-  const STORAGE_KEY = "multiply_states";
+  const LEARN_KEY   = "multiply_learn_states";
+  const EXAM_KEY    = "multiply_exam_states";
   const STATE_EMOJI = { n: "❔", lg: "🙂", dg: "⭐", or: "😕", rd: "😰" };
   const STATE_BG    = { n: "#f0f0f0", lg: "#d4f5e5", dg: "#86efac", or: "#fed7aa", rd: "#fca5a5" };
   const STATE_LABEL = { n: "Denenmedi", lg: "1 kez doğru", dg: "Ustalaştın!", or: "Zorlandın", rd: "Tekrar lazım" };
-
   const progressLabel = document.getElementById("progress-label");
   const progressFill  = document.getElementById("progress-fill");
   const factGrid      = document.getElementById("fact-grid");
   const legendEl      = document.getElementById("legend");
   const resetBtn      = document.getElementById("reset-btn");
+  const tabLearn      = document.getElementById("tab-learn");
+  const tabExam       = document.getElementById("tab-exam");
 
-  function loadData() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
-    catch { return {}; }
-  }
+  let activeMode = "learn";
+
+  function loadLearnData() { try { return JSON.parse(localStorage.getItem(LEARN_KEY)) || {}; } catch { return {}; } }
+  function loadExamData()  { try { return JSON.parse(localStorage.getItem(EXAM_KEY))  || {}; } catch { return {}; } }
 
   function buildGrid() {
     factGrid.innerHTML = "";
@@ -304,12 +332,17 @@
   }
 
   function renderDashboard() {
-    const d = loadData();
+    const ld = loadLearnData();
+    const ed = loadExamData();
     let mastered = 0;
 
     for (let n = 2; n <= 10; n++) {
       for (let m = 1; m <= 10; m++) {
-        const st   = d[`${n}_${m}`] || "n";
+        const lst = ld[`${n}_${m}`] || "n";
+        const est = ed[`${n}_${m}`] || "n";
+        let st;
+        st = activeMode === "learn" ? lst : est;
+
         const cell = factGrid.querySelector(`[data-n="${n}"][data-m="${m}"]`);
         cell.textContent      = STATE_EMOJI[st];
         cell.style.background = STATE_BG[st];
@@ -318,13 +351,21 @@
     }
 
     const pct = Math.round(mastered / 90 * 100);
-    progressFill.style.width    = `${pct}%`;
-    progressLabel.textContent   = `${mastered} / 90 soruda ustasın (%${pct})`;
+    progressFill.style.width  = `${pct}%`;
+    progressLabel.textContent = `${mastered} / 90 soruda ustasın (%${pct})`;
   }
+
+  [tabLearn, tabExam].forEach(btn => btn.addEventListener("click", () => {
+    [tabLearn, tabExam].forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    activeMode = btn === tabLearn ? "learn" : "exam";
+    renderDashboard();
+  }));
 
   resetBtn.addEventListener("click", () => {
     if (!confirm("Tüm ilerleme silinecek. Emin misin?")) return;
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(LEARN_KEY);
+    localStorage.removeItem(EXAM_KEY);
     renderDashboard();
   });
 
