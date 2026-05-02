@@ -42,7 +42,6 @@
       backdrop-filter: blur(8px);
     }
 
-    /* ── hero ── */
     .hero {
       padding: 24px 28px 16px;
       background: linear-gradient(135deg, rgba(249,115,22,0.18), rgba(103,232,249,0.30));
@@ -55,23 +54,15 @@
     }
     h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.4rem); line-height: 1; }
     .subtitle { margin: 8px 0 0; font-size: 0.98rem; opacity: 0.8; }
-    .nav-links { display: flex; gap: 8px; flex-shrink: 0; }
     .nav-link {
-      font: inherit;
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--accent);
-      background: rgba(255,255,255,0.75);
-      border: 2px solid rgba(249,115,22,0.35);
-      border-radius: 999px;
-      padding: 6px 14px;
-      text-decoration: none;
-      white-space: nowrap;
+      font: inherit; font-size: 0.88rem; font-weight: 700;
+      color: var(--accent); background: rgba(255,255,255,0.75);
+      border: 2px solid rgba(249,115,22,0.35); border-radius: 999px;
+      padding: 6px 14px; text-decoration: none; white-space: nowrap;
       transition: background 140ms;
     }
     .nav-link:hover { background: white; }
 
-    /* ── layout ── */
     .content { padding: 20px 28px 28px; display: grid; gap: 16px; }
 
     .panel {
@@ -82,7 +73,6 @@
     }
     .panel h2 { margin: 0 0 12px; font-size: 1.05rem; }
 
-    /* ── progress bar ── */
     .progress-label { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
     .progress-track {
       background: #fed7aa;
@@ -98,97 +88,43 @@
       width: 0%;
     }
 
-    /* ── fact grid ── */
     .fact-grid {
       display: grid;
       grid-template-columns: 36px repeat(10, 1fr);
       gap: 5px;
     }
     .grid-corner, .grid-header {
-      text-align: center;
-      font-weight: 800;
-      font-size: 0.82rem;
-      padding: 5px 2px;
-      color: #888;
+      text-align: center; font-weight: 800; font-size: 0.82rem;
+      padding: 5px 2px; color: #888;
     }
     .grid-row-label {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 0.88rem;
-      color: var(--text);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.88rem; color: var(--text);
     }
     .grid-cell {
       aspect-ratio: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      font-size: clamp(0.8rem, 2.2vw, 1.2rem);
-      cursor: default;
-      transition: transform 120ms;
-      background: #f0f0f0;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 8px; font-size: clamp(0.8rem, 2.2vw, 1.2rem);
+      cursor: default; transition: transform 120ms; background: #f0f0f0;
     }
     .grid-cell:hover { transform: scale(1.18); }
 
-    /* ── legend ── */
     .legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 4px;
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px;
     }
     .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.82rem;
-      font-weight: 700;
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.82rem; font-weight: 700;
     }
     .legend-dot {
-      width: 20px;
-      height: 20px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
+      width: 20px; height: 20px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center; font-size: 0.75rem;
     }
 
-    /* ── tabs ── */
-    .tab-bar {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-    .tab-btn {
-      flex: 1;
-      padding: 8px 10px;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      background: transparent;
-      font: inherit;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #888;
-      cursor: pointer;
-      transition: border-color 130ms, color 130ms, background 130ms;
-    }
-    .tab-btn:hover  { border-color: #f97316; color: #f97316; }
-    .tab-btn.active { border-color: #f97316; color: #fff; background: #f97316; }
-
-    /* ── reset ── */
     .ghost-btn {
-      border: 2px solid #ccc;
-      border-radius: 16px;
-      padding: 11px 20px;
-      background: transparent;
-      color: #888;
-      font-weight: 700;
-      font: inherit;
-      cursor: pointer;
-      transition: border-color 130ms, color 130ms;
+      border: 2px solid #ccc; border-radius: 16px; padding: 11px 20px;
+      background: transparent; color: #888; font-weight: 700;
+      font: inherit; cursor: pointer; transition: border-color 130ms, color 130ms;
     }
     .ghost-btn:hover { border-color: #e53935; color: #e53935; }
     .center { display: flex; justify-content: center; }
@@ -213,7 +149,6 @@
       .panel { padding: 10px; }
       h1 { font-size: 1.4rem; }
       .hero-top { flex-wrap: wrap; }
-      .nav-links { gap: 5px; }
       .nav-link { white-space: normal; font-size: 0.72rem; padding: 4px 8px; }
       .fact-grid { gap: 2px; grid-template-columns: 24px repeat(10, 1fr); }
       .grid-corner, .grid-header { font-size: 0.62rem; }
@@ -227,10 +162,8 @@
   <section class="hero">
     <div class="hero-top">
       <h1>📊 İlerleme Haritam</h1>
-      <div class="nav-links">
-        <a class="nav-link" href="flashcard.html">🃏 Kartlar →</a>
-        <a class="nav-link" href="learn.html">Öğren →</a>
-        <a class="nav-link" href="index.html">Test →</a>
+      <div style="display:flex;gap:8px">
+        <a class="nav-link" href="index.html">← Çalış</a>
       </div>
     </div>
     <p class="subtitle">İlerleme durumunu takip et.</p>
@@ -248,11 +181,6 @@
 
     <!-- Grid -->
     <section class="panel">
-      <div class="tab-bar">
-        <button class="tab-btn active" id="tab-learn">📖 Öğrenme</button>
-        <button class="tab-btn"        id="tab-exam" >✏️ Test</button>
-        <button class="tab-btn"        id="tab-flash">🃏 Kartlar</button>
-      </div>
       <div class="fact-grid" id="fact-grid"></div>
       <div class="legend" id="legend"></div>
     </section>
@@ -266,31 +194,25 @@
 </main>
 
 <script>
-  const LEARN_KEY   = "multiply_learn_states";
-  const EXAM_KEY    = "multiply_exam_states";
-  const FLASH_KEY   = "multiply_flashcard_states";
+  const STORAGE_KEY = "multiply_learn_states";
   const STATE_EMOJI = { n: "❔", lg: "🙂", dg: "⭐", or: "😕", rd: "😰" };
   const STATE_BG    = { n: "#f0f0f0", lg: "#d4f5e5", dg: "#86efac", or: "#fed7aa", rd: "#fca5a5" };
   const STATE_LABEL = { n: "Denenmedi", lg: "1 kez doğru", dg: "Ustalaştın!", or: "Zorlandın", rd: "Tekrar lazım" };
+
   const progressLabel = document.getElementById("progress-label");
   const progressFill  = document.getElementById("progress-fill");
   const factGrid      = document.getElementById("fact-grid");
   const legendEl      = document.getElementById("legend");
   const resetBtn      = document.getElementById("reset-btn");
-  const tabLearn      = document.getElementById("tab-learn");
-  const tabExam       = document.getElementById("tab-exam");
-  const tabFlash      = document.getElementById("tab-flash");
 
-  let activeMode = "learn";
-
-  function loadLearnData() { try { return JSON.parse(localStorage.getItem(LEARN_KEY)) || {}; } catch { return {}; } }
-  function loadExamData()  { try { return JSON.parse(localStorage.getItem(EXAM_KEY))  || {}; } catch { return {}; } }
-  function loadFlashData() { try { return JSON.parse(localStorage.getItem(FLASH_KEY)) || {}; } catch { return {}; } }
+  function loadData() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch { return {}; }
+  }
 
   function buildGrid() {
     factGrid.innerHTML = "";
 
-    // header row
     const corner = document.createElement("div");
     corner.className = "grid-corner";
     corner.textContent = "×";
@@ -303,7 +225,6 @@
       factGrid.appendChild(h);
     }
 
-    // data rows
     for (let n = 2; n <= 10; n++) {
       const label = document.createElement("div");
       label.className = "grid-row-label";
@@ -337,21 +258,12 @@
   }
 
   function renderDashboard() {
-    const ld = loadLearnData();
-    const ed = loadExamData();
-    const fd = loadFlashData();
+    const d = loadData();
     let mastered = 0;
 
     for (let n = 2; n <= 10; n++) {
       for (let m = 1; m <= 10; m++) {
-        const lst = ld[`${n}_${m}`] || "n";
-        const est = ed[`${n}_${m}`] || "n";
-        const fst = fd[`${n}_${m}`] || "n";
-        let st;
-        if      (activeMode === "learn") st = lst;
-        else if (activeMode === "exam")  st = est;
-        else                             st = fst;
-
+        const st = d[`${n}_${m}`] || "n";
         const cell = factGrid.querySelector(`[data-n="${n}"][data-m="${m}"]`);
         cell.textContent      = STATE_EMOJI[st];
         cell.style.background = STATE_BG[st];
@@ -364,18 +276,11 @@
     progressLabel.textContent = `${mastered} / 90 soruda ustasın (%${pct})`;
   }
 
-  [tabLearn, tabExam, tabFlash].forEach(btn => btn.addEventListener("click", () => {
-    [tabLearn, tabExam, tabFlash].forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    activeMode = btn === tabLearn ? "learn" : btn === tabExam ? "exam" : "flash";
-    renderDashboard();
-  }));
-
   resetBtn.addEventListener("click", () => {
     if (!confirm("Tüm ilerleme silinecek. Emin misin?")) return;
-    localStorage.removeItem(LEARN_KEY);
-    localStorage.removeItem(EXAM_KEY);
-    localStorage.removeItem(FLASH_KEY);
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem("multiply_exam_states");
+    localStorage.removeItem("multiply_flashcard_states");
     renderDashboard();
   });
 
