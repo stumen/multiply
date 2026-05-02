@@ -84,6 +84,18 @@
       font-size: 1.35rem;
       font-weight: 700;
       box-shadow: 0 8px 16px rgba(139,92,246,0.18);
+      position: relative;
+    }
+    .mbadge {
+      position: absolute;
+      top: -5px; right: -5px;
+      background: #7c3aed;
+      color: white;
+      font-size: 0.58rem;
+      font-weight: 800;
+      border-radius: 999px;
+      padding: 2px 5px;
+      line-height: 1.4;
     }
 
     .number-btn:hover, .number-btn:focus-visible,
@@ -381,12 +393,23 @@
     // ── setup buttons ────────────────────────────────────────────────────────
 
     function buildChoiceButtons() {
+      const d = loadData();
       for (let n = 2; n <= 10; n++) {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "number-btn";
-        btn.textContent = n;
         btn.dataset.number = n;
+
+        let mastered = 0;
+        for (let m = 1; m <= 10; m++)
+          if (getState(d, n, m) === "dg") mastered++;
+
+        btn.appendChild(document.createTextNode(n));
+        const badge = document.createElement("span");
+        badge.className = "mbadge";
+        badge.textContent = `⭐${mastered}`;
+        btn.appendChild(badge);
+
         btn.addEventListener("click", () => {
           filterState = null;
           if (selectedNumbers.has(n)) selectedNumbers.delete(n);

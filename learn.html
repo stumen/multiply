@@ -520,12 +520,23 @@
 
   // ── setup buttons ─────────────────────────────────────────────────────────
   function buildNumberButtons() {
+    const d = loadData();
     for (let n = 2; n <= 10; n++) {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "number-btn";
       btn.dataset.n = n;
-      btn.textContent = n;
+
+      let mastered = 0;
+      for (let m = 1; m <= 10; m++)
+        if (getState(d, n, m) === "dg") mastered++;
+
+      btn.appendChild(document.createTextNode(n));
+      const badge = document.createElement("span");
+      badge.className = "mbadge";
+      badge.textContent = `⭐${mastered}`;
+      btn.appendChild(badge);
+
       btn.addEventListener("click", () => selectNumber(n));
       numberGrid.appendChild(btn);
     }
