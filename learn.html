@@ -538,7 +538,7 @@
   }
 
   function updateTableRow(m) {
-    if (filterState !== null || selectedNumbers.size !== 1) return;
+    if (filterStates.size > 0 || selectedNumbers.size !== 1) return;
     const d   = loadData();
     const row = quizTable.querySelector(`[data-m="${m}"]`);
     if (!row) return;
@@ -546,7 +546,7 @@
   }
 
   function highlightCurrentRow() {
-    if (filterState !== null || selectedNumbers.size !== 1) return;
+    if (filterStates.size > 0 || selectedNumbers.size !== 1) return;
     quizTable.querySelectorAll(".trow").forEach(r => r.classList.remove("current"));
     if (currentQuestion) {
       const row = quizTable.querySelector(`[data-m="${currentQuestion.factorB}"]`);
@@ -881,14 +881,14 @@
     summaryPanel.classList.remove("hidden");
 
     const d = loadData();
-    const allMastered = filterState !== null
+    const allMastered = filterStates.size > 0
       ? true
       : [...selectedNumbers].every(n =>
           [...Array(10)].every((_,i) => getState(d, n, i+1) === "dg")
         );
 
     if (allMastered) {
-      const label = filterState !== null
+      const label = filterStates.size > 0
         ? `bu grubu`
         : selectedNumbers.size === 1
           ? `${[...selectedNumbers][0]} tablosunu`
