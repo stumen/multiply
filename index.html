@@ -399,7 +399,7 @@
 
     const TIME_PER_QUESTION = 3;
     const selectedNumbers = new Set();
-    let filterState = null;
+    let filterStates = new Set();
     let answered = 0;
     let correct = 0;
     let timeLeft = 0;
@@ -447,11 +447,10 @@
         btn.appendChild(badge);
 
         btn.addEventListener("click", () => {
-          filterState = null;
           if (selectedNumbers.has(n)) selectedNumbers.delete(n);
           else selectedNumbers.add(n);
           btn.classList.toggle("active", selectedNumbers.has(n));
-          startButton.disabled = selectedNumbers.size === 0;
+          startButton.disabled = selectedNumbers.size === 0 && filterStates.size === 0;
           buildEmojiPresets();
         });
         numberChoices.appendChild(btn);
@@ -462,22 +461,22 @@
       const container = document.getElementById("emoji-presets");
       const d = loadData();
       container.innerHTML = "";
+      const numsToCount = selectedNumbers.size > 0 ? [...selectedNumbers] : [2,3,4,5,6,7,8,9,10];
       ["n","lg","dg","or","rd"].forEach(state => {
         let count = 0;
-        for (let n = 2; n <= 10; n++)
+        for (const n of numsToCount)
           for (let m = 1; m <= 10; m++)
             if (getState(d, n, m) === state) count++;
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "emoji-preset-btn";
         btn.disabled = count === 0;
-        if (filterState === state) btn.classList.add("active");
+        if (filterStates.has(state)) btn.classList.add("active");
         btn.innerHTML = `<span class="preset-count">${count}</span><span class="preset-emoji">${STATE_EMOJI[state]}</span><span class="preset-label">${STATE_LABEL[state]}</span>`;
         btn.addEventListener("click", () => {
-          filterState = state;
-          selectedNumbers.clear();
-          numberChoices.querySelectorAll(".number-btn").forEach(b => b.classList.remove("active"));
-          startButton.disabled = false;
+          if (filterStates.has(state)) filterStates.delete(state);
+          else filterStates.add(state);
+          startButton.disabled = selectedNumbers.size === 0 && filterStates.size === 0;
           buildEmojiPresets();
         });
         container.appendChild(btn);
@@ -496,17 +495,15 @@
     }
 
     function buildPool() {
+      const d = loadData();
       const pool = [];
-      if (filterState !== null) {
-        const d = loadData();
-        for (let n = 2; n <= 10; n++)
-          for (let m = 1; m <= 10; m++)
-            if (getState(d, n, m) === filterState)
-              pool.push({ factorA: n, factorB: m, answer: n * m });
-      } else {
-        for (const n of selectedNumbers)
-          for (let m = 1; m <= 10; m++)
-            pool.push({ factorA: n, factorB: m, answer: n * m });
+      for (let n = 2; n <= 10; n++) {
+        if (selectedNumbers.size > 0 && !selectedNumbers.has(n)) continue;
+        for (let m = 1; m <= 10; m++) {
+          const st = getState(d, n, m);
+          if (filterStates.size > 0 && !filterStates.has(st)) continue;
+          pool.push({ factorA: n, factorB: m, answer: n * m });
+        }
       }
       return shuffle(pool);
     }
@@ -790,6 +787,7 @@
       summaryPanel.classList.add("hidden");
       setupPanel.classList.remove("hidden");
       selectedNumbers.clear();
+      filterStates.clear();
       startButton.disabled = true;
       buildChoiceButtons();
       buildEmojiPresets();
