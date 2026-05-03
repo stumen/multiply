@@ -188,7 +188,19 @@
       width: 0%;
     }
 
-    .quiz-stats { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+    .quiz-stats { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; flex: 1; }
+    .quiz-stats-row { display: flex; align-items: center; gap: 8px; }
+
+    .exit-btn {
+      flex-shrink: 0;
+      font: inherit; font-size: 0.8rem; font-weight: 700;
+      color: #9ca3af; background: transparent;
+      border: 2px solid #e0e7ff; border-radius: 999px;
+      padding: 5px 12px; cursor: pointer; white-space: nowrap;
+      transition: border-color 120ms, color 120ms, background 120ms;
+    }
+    .exit-btn:hover { border-color: #dc2626; color: #dc2626; background: #fff5f5; }
+    .exit-btn:focus-visible { outline: 3px solid rgba(220,38,38,0.3); outline-offset: 2px; }
     .pill {
       background: #f0f4ff; border-radius: 999px;
       padding: 5px 13px; font-weight: 700; font-size: 0.84rem; color: var(--text);
@@ -368,11 +380,14 @@
         <div class="progress-track">
           <div class="progress-fill" id="session-progress" style="width:0%"></div>
         </div>
-        <div class="quiz-stats">
-          <span class="pill hidden" id="timer-pill">⏱ 0s</span>
-          <span class="pill" id="remaining-pill">Kaldı: 0</span>
-          <span class="pill" id="attempts-pill">Deneme: 0</span>
-          <span class="pill" id="mastered-pill">⭐ 0 / 0</span>
+        <div class="quiz-stats-row">
+          <div class="quiz-stats">
+            <span class="pill hidden" id="timer-pill">⏱ 0s</span>
+            <span class="pill" id="remaining-pill">Kaldı: 0</span>
+            <span class="pill" id="attempts-pill">Deneme: 0</span>
+            <span class="pill" id="mastered-pill">⭐ 0 / 0</span>
+          </div>
+          <button type="button" class="exit-btn" id="exit-btn">✕ Çık</button>
         </div>
       </div>
 
@@ -430,6 +445,7 @@
   const numberEntry     = document.getElementById("number-entry");
   const answerInput     = document.getElementById("answer-input");
   const submitAnswerBtn = document.getElementById("submit-answer-btn");
+  const exitBtn         = document.getElementById("exit-btn");
 
   const STORAGE_KEY = "multiply_learn_states";
   const STATE_EMOJI = { n: "❔", lg: "🙂", dg: "⭐", or: "😕", rd: "😰" };
@@ -876,6 +892,21 @@
       summaryDetail.textContent = `${sessionAttempts} denemede çalıştın.`;
     }
   }
+
+  exitBtn.addEventListener("click", () => {
+    if (!gameActive) return;
+    gameActive = false;
+    clearInterval(timerInterval);
+    timerInterval = null;
+    quizPanel.classList.add("hidden");
+    summaryPanel.classList.add("hidden");
+    setupPanel.classList.remove("hidden");
+    selectedNumbers.clear();
+    filterStates.clear();
+    startBtn.disabled = true;
+    buildNumberButtons();
+    buildEmojiPresets();
+  });
 
   modeMC    .addEventListener("click", () => { inputMode = "mc";   modeMC.classList.add("active");     modeType.classList.remove("active"); });
   modeType  .addEventListener("click", () => { inputMode = "type"; modeType.classList.add("active");   modeMC.classList.remove("active"); });
