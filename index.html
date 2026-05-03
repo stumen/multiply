@@ -175,10 +175,27 @@
     .start-btn:focus-visible { outline: 3px solid rgba(249,115,22,0.5); outline-offset: 2px; }
 
     /* ── Quiz panel ───────────────────────────────── */
-    .quiz-header { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    .quiz-header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+
+    .quiz-header-top {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+
+    .quiz-score-display {
+      display: flex; align-items: baseline; gap: 3px; line-height: 1;
+    }
+    .qs-num  { font-size: 2.1rem; font-weight: 800; color: var(--accent); }
+    .qs-slash { font-size: 1.4rem; font-weight: 700; opacity: 0.35; margin: 0 1px; }
+    .qs-total { font-size: 1.4rem; font-weight: 800; opacity: 0.55; }
+    .qs-unit  {
+      font-size: 0.78rem; font-weight: 700; opacity: 0.5;
+      align-self: flex-end; padding-bottom: 4px; margin-left: 5px;
+    }
+
+    .quiz-header-actions { display: flex; align-items: center; gap: 7px; }
 
     .progress-track {
-      background: #e0e7ff; border-radius: 999px; height: 10px; overflow: hidden;
+      background: #e0e7ff; border-radius: 999px; height: 12px; overflow: hidden;
     }
     .progress-fill {
       height: 100%;
@@ -188,8 +205,7 @@
       width: 0%;
     }
 
-    .quiz-stats { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; flex: 1; }
-    .quiz-stats-row { display: flex; align-items: center; gap: 8px; }
+    .quiz-sub { font-size: 0.78rem; font-weight: 700; color: #aab2cc; }
 
     .exit-btn {
       flex-shrink: 0;
@@ -377,18 +393,25 @@
     <div class="panel hidden" id="quiz-panel">
 
       <div class="quiz-header">
+        <div class="quiz-header-top">
+          <div class="quiz-score-display">
+            <span class="qs-num" id="mastered-pill">0</span>
+            <span class="qs-slash">/</span>
+            <span class="qs-total" id="score-total-el">0</span>
+            <span class="qs-unit">doğru</span>
+          </div>
+          <div class="quiz-header-actions">
+            <span class="pill hidden" id="timer-pill">⏱ 0s</span>
+            <button type="button" class="exit-btn" id="exit-btn">✕ Çık</button>
+          </div>
+        </div>
         <div class="progress-track">
           <div class="progress-fill" id="session-progress" style="width:0%"></div>
         </div>
-        <div class="quiz-stats-row">
-          <div class="quiz-stats">
-            <span class="pill hidden" id="timer-pill">⏱ 0s</span>
-            <span class="pill" id="remaining-pill">Kaldı: 0</span>
-            <span class="pill" id="attempts-pill">Deneme: 0</span>
-            <span class="pill" id="mastered-pill">⭐ 0 / 0</span>
-          </div>
-          <button type="button" class="exit-btn" id="exit-btn">✕ Çık</button>
+        <div class="quiz-sub">
+          <span id="attempts-pill">0 deneme</span>
         </div>
+        <span class="hidden" id="remaining-pill"></span>
       </div>
 
       <div class="mult-table hidden" id="quiz-table"></div>
@@ -446,6 +469,7 @@
   const answerInput     = document.getElementById("answer-input");
   const submitAnswerBtn = document.getElementById("submit-answer-btn");
   const exitBtn         = document.getElementById("exit-btn");
+  const scoreTotalEl    = document.getElementById("score-total-el");
 
   const STORAGE_KEY = "multiply_learn_states";
   const STATE_EMOJI = { n: "❔", lg: "🙂", dg: "⭐", or: "😕", rd: "😰" };
@@ -576,6 +600,7 @@
       for (const n of numsToCount)
         for (let m = 1; m <= 10; m++)
           if (getState(d, n, m) === state) count++;
+      if (count === 0) filterStates.delete(state);
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "emoji-preset-btn";
@@ -585,11 +610,11 @@
       btn.addEventListener("click", () => {
         if (filterStates.has(state)) filterStates.delete(state);
         else filterStates.add(state);
-        startBtn.disabled = selectedNumbers.size === 0 && filterStates.size === 0;
         buildEmojiPresets();
       });
       container.appendChild(btn);
     });
+    startBtn.disabled = selectedNumbers.size === 0 && filterStates.size === 0;
   }
 
   function buildQueue() {
@@ -614,9 +639,9 @@
   }
 
   function updatePills() {
-    remainingPill.textContent = `Kaldı: ${questionQueue.length}`;
-    attemptsPill.textContent  = `Deneme: ${sessionAttempts}`;
-    masteredPill.textContent  = `⭐ ${sessionCorrectKeys.size} / ${sessionFacts.length}`;
+    masteredPill.textContent  = `${sessionCorrectKeys.size}`;
+    scoreTotalEl.textContent  = `${sessionFacts.length}`;
+    attemptsPill.textContent  = `${sessionAttempts} deneme`;
     const pct = sessionFacts.length > 0
       ? Math.round(sessionCorrectKeys.size / sessionFacts.length * 100)
       : 0;
@@ -707,7 +732,7 @@
       if (btn) btn.classList.add("correct");
       else answerInput.classList.add("correct");
       questionQueue.shift();
-      if (next !== "dg") questionQueue.push(currentQuestion);
+      if (timerMode && next !== "dg") questionQueue.push(currentQuestion);
       feedback.textContent = "Doğru! 🎉";
       feedback.className = "feedback ok";
     } else {
@@ -834,6 +859,7 @@
     summaryPanel.classList.add("hidden");
     quizPanel.classList.remove("hidden");
     sessionProgress.style.width = "0%";
+    scoreTotalEl.textContent = `${sessionFacts.length}`;
 
     if (filterStates.size === 0 && selectedNumbers.size === 1) {
       quizTable.classList.remove("hidden");
