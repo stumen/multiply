@@ -225,7 +225,7 @@
 
     /* ── Mini table ───────────────────────────────── */
     .mult-table {
-      display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; margin-bottom: 14px;
+      display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; margin-bottom: 14px;
     }
     .trow {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -533,7 +533,7 @@
   function renderTable(n) {
     const d = loadData();
     quizTable.innerHTML = "";
-    for (let m = 1; m <= 10; m++) {
+    for (let m = 2; m <= 9; m++) {
       const row = document.createElement("div");
       row.className = "trow";
       row.dataset.m = m;
@@ -563,20 +563,20 @@
   function buildNumberButtons() {
     numberGrid.innerHTML = "";
     const d = loadData();
-    for (let n = 2; n <= 10; n++) {
+    for (let n = 2; n <= 9; n++) {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "number-btn";
       btn.dataset.n = n;
 
       let mastered = 0;
-      for (let m = 1; m <= 10; m++)
+      for (let m = 2; m <= 9; m++)
         if (getState(d, n, m) === "dg") mastered++;
 
       btn.appendChild(document.createTextNode(n));
       const badge = document.createElement("span");
       badge.className = "mbadge";
-      badge.textContent = `⭐ ${mastered}/10`;
+      badge.textContent = `⭐ ${mastered}/8`;
       btn.appendChild(badge);
 
       btn.addEventListener("click", () => {
@@ -594,11 +594,11 @@
     const container = document.getElementById("emoji-presets");
     const d = loadData();
     container.innerHTML = "";
-    const numsToCount = selectedNumbers.size > 0 ? [...selectedNumbers] : [2,3,4,5,6,7,8,9,10];
+    const numsToCount = selectedNumbers.size > 0 ? [...selectedNumbers] : [2,3,4,5,6,7,8,9];
     ["n","lg","dg","or","rd"].forEach(state => {
       let count = 0;
       for (const n of numsToCount)
-        for (let m = 1; m <= 10; m++)
+        for (let m = 2; m <= 9; m++)
           if (getState(d, n, m) === state) count++;
       if (count === 0) filterStates.delete(state);
       const btn = document.createElement("button");
@@ -620,9 +620,9 @@
   function buildQueue() {
     const d = loadData();
     const groups = { rd: [], or: [], n: [], lg: [], dg: [] };
-    for (let n = 2; n <= 10; n++) {
+    for (let n = 2; n <= 9; n++) {
       if (selectedNumbers.size > 0 && !selectedNumbers.has(n)) continue;
-      for (let m = 1; m <= 10; m++) {
+      for (let m = 2; m <= 9; m++) {
         const st = getState(d, n, m);
         if (st === "dg" && !filterStates.has("dg")) continue;
         if (filterStates.size > 0 && !filterStates.has(st)) continue;
@@ -902,7 +902,7 @@
       const allMastered = filterStates.size > 0
         ? true
         : [...selectedNumbers].every(n =>
-            [...Array(10)].every((_, i) => getState(d, n, i + 1) === "dg")
+            [...Array(8)].every((_, i) => getState(d, n, i + 2) === "dg")
           );
       if (allMastered) {
         const label = filterStates.size > 0

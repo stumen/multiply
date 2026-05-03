@@ -28,72 +28,70 @@
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      padding: 20px 14px 48px;
-      overflow-x: hidden;
+      padding: 10px;
     }
 
     .game {
-      width: min(100%, 760px);
+      width: min(100%, 720px);
       background: var(--card);
-      border-radius: 28px;
+      border-radius: 24px;
       box-shadow: var(--shadow);
       overflow: hidden;
     }
 
     /* ── Header ─────────────────────────────────── */
     .header {
-      padding: 22px 28px 18px;
+      flex-shrink: 0;
+      padding: 14px 20px 12px;
       background: linear-gradient(135deg, rgba(249,115,22,0.13) 0%, rgba(78,205,232,0.2) 100%);
       border-bottom: 1.5px solid rgba(255,255,255,0.55);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
     }
-    .header-left { display: flex; flex-direction: column; gap: 3px; }
-    h1 { margin: 0; font-size: clamp(1.5rem, 4vw, 2.2rem); line-height: 1.1; }
-    .tagline { margin: 0; font-size: 0.88rem; opacity: 0.65; }
+    .header-left { display: flex; flex-direction: column; gap: 1px; }
+    h1 { margin: 0; font-size: clamp(1.2rem, 3vw, 1.6rem); line-height: 1.15; }
+    .tagline { margin: 0; font-size: 0.78rem; opacity: 0.6; }
 
     .nav-btn {
       flex-shrink: 0;
-      font: inherit; font-size: 0.85rem; font-weight: 700;
+      font: inherit; font-size: 0.8rem; font-weight: 700;
       color: var(--accent); background: white;
       border: 2px solid rgba(249,115,22,0.28); border-radius: 999px;
-      padding: 7px 16px; text-decoration: none; white-space: nowrap;
+      padding: 5px 14px; text-decoration: none; white-space: nowrap;
       transition: background 120ms, border-color 120ms;
     }
     .nav-btn:hover { background: #fff7ed; border-color: var(--accent); }
 
     /* ── Content ─────────────────────────────────── */
-    .content { padding: 20px 24px 28px; display: flex; flex-direction: column; gap: 14px; }
+    .content {
+      padding: 10px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
     /* ── Panel ───────────────────────────────────── */
     .panel {
       background: rgba(245,248,255,0.72);
-      border-radius: 20px;
-      padding: 18px 20px;
+      border-radius: 16px;
+      padding: 10px 14px;
       border: 1.5px solid rgba(255,255,255,0.75);
+      flex-shrink: 0;
     }
-    .panel h2 { margin: 0 0 14px; font-size: 1rem; font-weight: 800; opacity: 0.8; }
+    .panel h2 { margin: 0 0 8px; font-size: 0.82rem; font-weight: 800; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.04em; }
 
     /* ── Overall progress ────────────────────────── */
     .progress-summary {
-      display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
+      display: flex; align-items: baseline; gap: 8px; margin-bottom: 7px; flex-wrap: wrap;
     }
-    .progress-fraction {
-      font-size: 1.5rem; font-weight: 800; line-height: 1;
-    }
-    .progress-pct {
-      font-size: 1rem; font-weight: 700; opacity: 0.6;
-    }
-    .progress-label-text {
-      font-size: 0.88rem; opacity: 0.65; margin-left: auto;
-    }
+    .progress-fraction { font-size: 1.2rem; font-weight: 800; line-height: 1; }
+    .progress-pct      { font-size: 0.9rem; font-weight: 700; opacity: 0.6; }
+    .progress-label-text { font-size: 0.78rem; opacity: 0.55; margin-left: auto; }
+
     .progress-track {
-      background: #e0e7ff;
-      border-radius: 999px;
-      height: 14px;
-      overflow: hidden;
+      background: #e0e7ff; border-radius: 999px; height: 9px; overflow: hidden;
     }
     .progress-fill {
       height: 100%;
@@ -106,48 +104,48 @@
     /* ── Fact grid ───────────────────────────────── */
     .fact-grid {
       display: grid;
-      grid-template-columns: 36px repeat(10, 1fr);
-      gap: 5px;
+      grid-template-columns: 24px repeat(8, 1fr);
+      gap: 3px;
     }
     .grid-corner, .grid-header {
-      text-align: center; font-weight: 800; font-size: 0.8rem;
-      padding: 5px 2px; color: #9ca3af;
+      text-align: center; font-weight: 800; font-size: 0.68rem;
+      padding: 2px 1px; color: #9ca3af; line-height: 1.6;
     }
     .grid-row-label {
       display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 0.88rem; color: var(--text);
+      font-weight: 800; font-size: 0.75rem; color: var(--text);
     }
     .grid-cell {
       aspect-ratio: 1;
       display: flex; align-items: center; justify-content: center;
-      border-radius: 9px; font-size: clamp(0.78rem, 2.2vw, 1.15rem);
-      cursor: default; transition: transform 120ms; background: #f0f0f0;
-      border: 1.5px solid rgba(255,255,255,0.6);
+      border-radius: 6px; font-size: 1.45rem;
+      cursor: default; transition: transform 100ms; background: #f0f0f0;
+      border: 1px solid rgba(255,255,255,0.5);
     }
-    .grid-cell:hover { transform: scale(1.2); z-index: 1; position: relative; }
+    .grid-cell:hover { transform: scale(1.25); z-index: 1; position: relative; }
 
     /* ── Legend ──────────────────────────────────── */
     .legend {
-      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px;
-      padding-top: 12px; border-top: 1.5px solid rgba(0,0,0,0.06);
+      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;
+      padding-top: 8px; border-top: 1px solid rgba(0,0,0,0.07);
     }
     .legend-item {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 0.82rem; font-weight: 700;
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.72rem; font-weight: 700;
     }
     .legend-dot {
-      width: 24px; height: 24px; border-radius: 7px;
+      width: 18px; height: 18px; border-radius: 5px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.78rem; flex-shrink: 0;
-      border: 1.5px solid rgba(255,255,255,0.6);
+      font-size: 0.65rem; flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.6);
     }
 
     /* ── Reset button ────────────────────────────── */
-    .reset-panel { display: flex; justify-content: center; }
+    .reset-panel { display: flex; justify-content: center; flex-shrink: 0; }
     .reset-btn {
-      border: 2px solid #e5e7eb; border-radius: 14px; padding: 11px 24px;
+      border: 2px solid #e5e7eb; border-radius: 12px; padding: 8px 20px;
       background: transparent; color: #9ca3af;
-      font: inherit; font-size: 0.9rem; font-weight: 700;
+      font: inherit; font-size: 0.82rem; font-weight: 700;
       cursor: pointer; transition: border-color 130ms, color 130ms, background 130ms;
     }
     .reset-btn:hover { border-color: #dc2626; color: #dc2626; background: #fff5f5; }
@@ -155,27 +153,24 @@
 
     /* ── Responsive ──────────────────────────────── */
     @media (max-width: 600px) {
-      body { padding: 12px 10px 36px; }
-      .header { padding: 16px 14px 14px; }
-      .content { padding: 14px 12px 20px; gap: 12px; }
-      .panel { padding: 14px; }
-      .fact-grid { gap: 3px; grid-template-columns: 28px repeat(10, 1fr); }
-      .grid-corner, .grid-header { font-size: 0.7rem; padding: 4px 1px; }
-      .grid-row-label { font-size: 0.75rem; }
-      .grid-cell { border-radius: 7px; }
+      body { padding: 8px; }
+      .game { border-radius: 18px; }
+      .header { padding: 12px 14px 10px; }
+      .content { padding: 8px 10px 10px; gap: 7px; }
+      .panel { padding: 9px 12px; }
+      .fact-grid { gap: 2px; grid-template-columns: 20px repeat(8, 1fr); }
+      .grid-corner, .grid-header { font-size: 0.6rem; }
+      .grid-row-label { font-size: 0.65rem; }
+      .grid-cell { font-size: 1.1rem; }
     }
 
     @media (max-width: 400px) {
-      body { padding: 8px 8px 28px; }
-      .header { padding: 14px 12px 12px; }
-      .content { padding: 10px 10px 16px; gap: 10px; }
-      .panel { padding: 12px; }
-      h1 { font-size: 1.4rem; }
-      .fact-grid { gap: 2px; grid-template-columns: 22px repeat(10, 1fr); }
-      .grid-corner, .grid-header { font-size: 0.62rem; }
-      .grid-row-label { font-size: 0.62rem; }
-      .legend-item { font-size: 0.75rem; }
-      .legend-dot { width: 20px; height: 20px; font-size: 0.7rem; }
+      .header { padding: 10px 12px 8px; }
+      h1 { font-size: 1.1rem; }
+      .grid-cell { font-size: 0.9rem; border-radius: 4px; }
+      .fact-grid { grid-template-columns: 18px repeat(8, 1fr); }
+      .legend-item { font-size: 0.65rem; }
+      .legend-dot { width: 16px; height: 16px; }
     }
   </style>
 </head>
@@ -192,11 +187,10 @@
 
   <div class="content">
 
-    <!-- Overall progress -->
     <section class="panel">
       <h2>Genel İlerleme</h2>
       <div class="progress-summary">
-        <span class="progress-fraction" id="progress-fraction">0 / 90</span>
+        <span class="progress-fraction" id="progress-fraction">0 / 64</span>
         <span class="progress-pct" id="progress-pct">%0</span>
         <span class="progress-label-text">ustalaştığın soru</span>
       </div>
@@ -205,14 +199,12 @@
       </div>
     </section>
 
-    <!-- Grid -->
     <section class="panel">
       <h2>Tablo Haritası</h2>
       <div class="fact-grid" id="fact-grid"></div>
       <div class="legend" id="legend"></div>
     </section>
 
-    <!-- Reset -->
     <div class="reset-panel">
       <button class="reset-btn" id="reset-btn" type="button">İlerlemeyi Sıfırla</button>
     </div>
@@ -246,20 +238,20 @@
     corner.textContent = "×";
     factGrid.appendChild(corner);
 
-    for (let m = 1; m <= 10; m++) {
+    for (let m = 2; m <= 9; m++) {
       const h = document.createElement("div");
       h.className = "grid-header";
       h.textContent = m;
       factGrid.appendChild(h);
     }
 
-    for (let n = 2; n <= 10; n++) {
+    for (let n = 2; n <= 9; n++) {
       const label = document.createElement("div");
       label.className = "grid-row-label";
       label.textContent = n;
       factGrid.appendChild(label);
 
-      for (let m = 1; m <= 10; m++) {
+      for (let m = 2; m <= 9; m++) {
         const cell = document.createElement("div");
         cell.className = "grid-cell";
         cell.dataset.n = n;
@@ -289,8 +281,8 @@
     const d = loadData();
     let mastered = 0;
 
-    for (let n = 2; n <= 10; n++) {
-      for (let m = 1; m <= 10; m++) {
+    for (let n = 2; n <= 9; n++) {
+      for (let m = 2; m <= 9; m++) {
         const st = d[`${n}_${m}`] || "n";
         const cell = factGrid.querySelector(`[data-n="${n}"][data-m="${m}"]`);
         cell.textContent      = STATE_EMOJI[st];
@@ -299,9 +291,9 @@
       }
     }
 
-    const pct = Math.round(mastered / 90 * 100);
+    const pct = Math.round(mastered / 64 * 100);
     progressFill.style.width      = `${pct}%`;
-    progressFraction.textContent  = `${mastered} / 90`;
+    progressFraction.textContent  = `${mastered} / 64`;
     progressPct.textContent       = `%${pct}`;
   }
 
