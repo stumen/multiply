@@ -6,12 +6,12 @@
   <title>İlerleme Haritam</title>
   <style>
     :root {
-      --bg-top: #67e8f9;
-      --bg-bottom: #c4b5fd;
-      --card: rgba(255,255,255,0.93);
+      --bg-top: #4ecde8;
+      --bg-bottom: #a78bfa;
+      --card: rgba(255,255,255,0.96);
       --text: #1e1b4b;
       --accent: #f97316;
-      --shadow: 0 22px 60px rgba(124,58,237,0.24);
+      --shadow: 0 24px 64px rgba(109,40,217,0.22);
     }
 
     * { box-sizing: border-box; }
@@ -22,60 +22,75 @@
       font-family: "Trebuchet MS", "Comic Sans MS", sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at top left, rgba(255,255,255,0.55), transparent 30%),
-        radial-gradient(circle at bottom right, rgba(255,255,255,0.4), transparent 25%),
-        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
-      display: grid;
-      place-items: center;
-      padding: 16px;
+        radial-gradient(circle at 12% 12%, rgba(255,255,255,0.6) 0%, transparent 28%),
+        radial-gradient(circle at 88% 88%, rgba(255,255,255,0.4) 0%, transparent 22%),
+        linear-gradient(155deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px 14px 48px;
       overflow-x: hidden;
     }
 
     .game {
-      width: min(100%, 780px);
-      max-width: 100%;
+      width: min(100%, 760px);
       background: var(--card);
-      border: 4px solid rgba(255,255,255,0.7);
-      border-radius: 32px;
+      border-radius: 28px;
       box-shadow: var(--shadow);
       overflow: hidden;
-      backdrop-filter: blur(8px);
     }
 
-    .hero {
-      padding: 24px 28px 16px;
-      background: linear-gradient(135deg, rgba(249,115,22,0.18), rgba(103,232,249,0.30));
-    }
-    .hero-top {
+    /* ── Header ─────────────────────────────────── */
+    .header {
+      padding: 22px 28px 18px;
+      background: linear-gradient(135deg, rgba(249,115,22,0.13) 0%, rgba(78,205,232,0.2) 100%);
+      border-bottom: 1.5px solid rgba(255,255,255,0.55);
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: flex-start;
       gap: 12px;
     }
-    h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.4rem); line-height: 1; }
-    .subtitle { margin: 8px 0 0; font-size: 0.98rem; opacity: 0.8; }
-    .nav-link {
-      font: inherit; font-size: 0.88rem; font-weight: 700;
-      color: var(--accent); background: rgba(255,255,255,0.75);
-      border: 2px solid rgba(249,115,22,0.35); border-radius: 999px;
-      padding: 6px 14px; text-decoration: none; white-space: nowrap;
-      transition: background 140ms;
+    .header-left { display: flex; flex-direction: column; gap: 3px; }
+    h1 { margin: 0; font-size: clamp(1.5rem, 4vw, 2.2rem); line-height: 1.1; }
+    .tagline { margin: 0; font-size: 0.88rem; opacity: 0.65; }
+
+    .nav-btn {
+      flex-shrink: 0;
+      font: inherit; font-size: 0.85rem; font-weight: 700;
+      color: var(--accent); background: white;
+      border: 2px solid rgba(249,115,22,0.28); border-radius: 999px;
+      padding: 7px 16px; text-decoration: none; white-space: nowrap;
+      transition: background 120ms, border-color 120ms;
     }
-    .nav-link:hover { background: white; }
+    .nav-btn:hover { background: #fff7ed; border-color: var(--accent); }
 
-    .content { padding: 20px 28px 28px; display: grid; gap: 16px; }
+    /* ── Content ─────────────────────────────────── */
+    .content { padding: 20px 24px 28px; display: flex; flex-direction: column; gap: 14px; }
 
+    /* ── Panel ───────────────────────────────────── */
     .panel {
-      background: rgba(255,255,255,0.78);
-      border-radius: 24px;
-      padding: 20px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+      background: rgba(245,248,255,0.72);
+      border-radius: 20px;
+      padding: 18px 20px;
+      border: 1.5px solid rgba(255,255,255,0.75);
     }
-    .panel h2 { margin: 0 0 12px; font-size: 1.05rem; }
+    .panel h2 { margin: 0 0 14px; font-size: 1rem; font-weight: 800; opacity: 0.8; }
 
-    .progress-label { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    /* ── Overall progress ────────────────────────── */
+    .progress-summary {
+      display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
+    }
+    .progress-fraction {
+      font-size: 1.5rem; font-weight: 800; line-height: 1;
+    }
+    .progress-pct {
+      font-size: 1rem; font-weight: 700; opacity: 0.6;
+    }
+    .progress-label-text {
+      font-size: 0.88rem; opacity: 0.65; margin-left: auto;
+    }
     .progress-track {
-      background: #fed7aa;
+      background: #e0e7ff;
       border-radius: 999px;
       height: 14px;
       overflow: hidden;
@@ -84,18 +99,19 @@
       height: 100%;
       background: linear-gradient(90deg, #f97316, #fb923c);
       border-radius: 999px;
-      transition: width 500ms ease;
+      transition: width 600ms ease;
       width: 0%;
     }
 
+    /* ── Fact grid ───────────────────────────────── */
     .fact-grid {
       display: grid;
       grid-template-columns: 36px repeat(10, 1fr);
       gap: 5px;
     }
     .grid-corner, .grid-header {
-      text-align: center; font-weight: 800; font-size: 0.82rem;
-      padding: 5px 2px; color: #888;
+      text-align: center; font-weight: 800; font-size: 0.8rem;
+      padding: 5px 2px; color: #9ca3af;
     }
     .grid-row-label {
       display: flex; align-items: center; justify-content: center;
@@ -104,76 +120,86 @@
     .grid-cell {
       aspect-ratio: 1;
       display: flex; align-items: center; justify-content: center;
-      border-radius: 8px; font-size: clamp(0.8rem, 2.2vw, 1.2rem);
+      border-radius: 9px; font-size: clamp(0.78rem, 2.2vw, 1.15rem);
       cursor: default; transition: transform 120ms; background: #f0f0f0;
+      border: 1.5px solid rgba(255,255,255,0.6);
     }
-    .grid-cell:hover { transform: scale(1.18); }
+    .grid-cell:hover { transform: scale(1.2); z-index: 1; position: relative; }
 
+    /* ── Legend ──────────────────────────────────── */
     .legend {
-      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px;
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px;
+      padding-top: 12px; border-top: 1.5px solid rgba(0,0,0,0.06);
     }
     .legend-item {
-      display: flex; align-items: center; gap: 5px;
+      display: flex; align-items: center; gap: 6px;
       font-size: 0.82rem; font-weight: 700;
     }
     .legend-dot {
-      width: 20px; height: 20px; border-radius: 6px;
-      display: flex; align-items: center; justify-content: center; font-size: 0.75rem;
+      width: 24px; height: 24px; border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; flex-shrink: 0;
+      border: 1.5px solid rgba(255,255,255,0.6);
     }
 
-    .ghost-btn {
-      border: 2px solid #ccc; border-radius: 16px; padding: 11px 20px;
-      background: transparent; color: #888; font-weight: 700;
-      font: inherit; cursor: pointer; transition: border-color 130ms, color 130ms;
+    /* ── Reset button ────────────────────────────── */
+    .reset-panel { display: flex; justify-content: center; }
+    .reset-btn {
+      border: 2px solid #e5e7eb; border-radius: 14px; padding: 11px 24px;
+      background: transparent; color: #9ca3af;
+      font: inherit; font-size: 0.9rem; font-weight: 700;
+      cursor: pointer; transition: border-color 130ms, color 130ms, background 130ms;
     }
-    .ghost-btn:hover { border-color: #e53935; color: #e53935; }
-    .center { display: flex; justify-content: center; }
+    .reset-btn:hover { border-color: #dc2626; color: #dc2626; background: #fff5f5; }
+    .reset-btn:focus-visible { outline: 3px solid rgba(220,38,38,0.3); outline-offset: 2px; }
 
+    /* ── Responsive ──────────────────────────────── */
     @media (max-width: 600px) {
-      body { padding: 10px; }
-      .hero { padding: 16px 12px 10px; }
-      .content { padding: 10px 10px 16px; }
-      .panel { padding: 12px; }
-      .fact-grid { gap: 3px; }
+      body { padding: 12px 10px 36px; }
+      .header { padding: 16px 14px 14px; }
+      .content { padding: 14px 12px 20px; gap: 12px; }
+      .panel { padding: 14px; }
+      .fact-grid { gap: 3px; grid-template-columns: 28px repeat(10, 1fr); }
       .grid-corner, .grid-header { font-size: 0.7rem; padding: 4px 1px; }
       .grid-row-label { font-size: 0.75rem; }
-      .fact-grid { grid-template-columns: 28px repeat(10, 1fr); }
-      .nav-link { font-size: 0.78rem; padding: 5px 10px; }
-      .hero-top { gap: 8px; }
+      .grid-cell { border-radius: 7px; }
     }
 
     @media (max-width: 400px) {
-      body { padding: 8px; }
-      .hero { padding: 14px 10px 10px; }
-      .content { padding: 8px 8px 14px; }
-      .panel { padding: 10px; }
+      body { padding: 8px 8px 28px; }
+      .header { padding: 14px 12px 12px; }
+      .content { padding: 10px 10px 16px; gap: 10px; }
+      .panel { padding: 12px; }
       h1 { font-size: 1.4rem; }
-      .hero-top { flex-wrap: wrap; }
-      .nav-link { white-space: normal; font-size: 0.72rem; padding: 4px 8px; }
-      .fact-grid { gap: 2px; grid-template-columns: 24px repeat(10, 1fr); }
+      .fact-grid { gap: 2px; grid-template-columns: 22px repeat(10, 1fr); }
       .grid-corner, .grid-header { font-size: 0.62rem; }
-      .grid-row-label { font-size: 0.65rem; }
-      .legend-item { font-size: 0.72rem; }
+      .grid-row-label { font-size: 0.62rem; }
+      .legend-item { font-size: 0.75rem; }
+      .legend-dot { width: 20px; height: 20px; font-size: 0.7rem; }
     }
   </style>
 </head>
 <body>
 <main class="game">
-  <section class="hero">
-    <div class="hero-top">
-      <h1>📊 İlerleme Haritam</h1>
-      <div style="display:flex;gap:8px">
-        <a class="nav-link" href="index.html">← Çalış</a>
-      </div>
-    </div>
-    <p class="subtitle">İlerleme durumunu takip et.</p>
-  </section>
 
-  <section class="content">
+  <header class="header">
+    <div class="header-left">
+      <h1>📊 İlerleme Haritam</h1>
+      <p class="tagline">Ne kadar öğrendim?</p>
+    </div>
+    <a class="nav-btn" href="index.html">← Çalış</a>
+  </header>
+
+  <div class="content">
 
     <!-- Overall progress -->
     <section class="panel">
-      <div class="progress-label" id="progress-label">0 / 90 soruda ustasın (%0)</div>
+      <h2>Genel İlerleme</h2>
+      <div class="progress-summary">
+        <span class="progress-fraction" id="progress-fraction">0 / 90</span>
+        <span class="progress-pct" id="progress-pct">%0</span>
+        <span class="progress-label-text">ustalaştığın soru</span>
+      </div>
       <div class="progress-track">
         <div class="progress-fill" id="progress-fill"></div>
       </div>
@@ -181,16 +207,17 @@
 
     <!-- Grid -->
     <section class="panel">
+      <h2>Tablo Haritası</h2>
       <div class="fact-grid" id="fact-grid"></div>
       <div class="legend" id="legend"></div>
     </section>
 
     <!-- Reset -->
-    <section class="panel center">
-      <button class="ghost-btn" id="reset-btn" type="button">İlerlemeyi Sıfırla</button>
-    </section>
+    <div class="reset-panel">
+      <button class="reset-btn" id="reset-btn" type="button">İlerlemeyi Sıfırla</button>
+    </div>
 
-  </section>
+  </div>
 </main>
 
 <script>
@@ -199,11 +226,12 @@
   const STATE_BG    = { n: "#f0f0f0", lg: "#d4f5e5", dg: "#86efac", or: "#fed7aa", rd: "#fca5a5" };
   const STATE_LABEL = { n: "Denenmedi", lg: "1 kez doğru", dg: "Ustalaştın!", or: "Zorlandın", rd: "Tekrar lazım" };
 
-  const progressLabel = document.getElementById("progress-label");
-  const progressFill  = document.getElementById("progress-fill");
-  const factGrid      = document.getElementById("fact-grid");
-  const legendEl      = document.getElementById("legend");
-  const resetBtn      = document.getElementById("reset-btn");
+  const progressFraction = document.getElementById("progress-fraction");
+  const progressPct      = document.getElementById("progress-pct");
+  const progressFill     = document.getElementById("progress-fill");
+  const factGrid         = document.getElementById("fact-grid");
+  const legendEl         = document.getElementById("legend");
+  const resetBtn         = document.getElementById("reset-btn");
 
   function loadData() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
@@ -272,8 +300,9 @@
     }
 
     const pct = Math.round(mastered / 90 * 100);
-    progressFill.style.width  = `${pct}%`;
-    progressLabel.textContent = `${mastered} / 90 soruda ustasın (%${pct})`;
+    progressFill.style.width      = `${pct}%`;
+    progressFraction.textContent  = `${mastered} / 90`;
+    progressPct.textContent       = `%${pct}`;
   }
 
   resetBtn.addEventListener("click", () => {
