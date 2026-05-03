@@ -723,6 +723,7 @@
     const next  = nextState(prev, isCorrect);
 
     d[stateKey(n, m)] = next;
+    if (m >= 2) d[stateKey(m, n)] = next;
     saveData(d);
     updateTableRow(m);
 
